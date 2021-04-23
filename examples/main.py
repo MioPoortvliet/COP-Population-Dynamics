@@ -1,0 +1,1 @@
+from src.animals import Fox, Rabbit

@@ -18,5 +18,5 @@ class Animal:
 class Fox(Animal):
 	pass
 
-class Rabit(Animal):
+class Rabbit(Animal):
 	pass
