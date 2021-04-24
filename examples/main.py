@@ -14,15 +14,12 @@ if __name__ == "__main__":
 		"animals": ["fox", "rabbit"],
 		"foods": ["carrot", ],
 		"fox":5,
-		"rabbit":25,
-		"carrot":20
+		"rabbit":20,
+		"carrot":5
 	}
 	animal_objects = {"fox": Fox, "rabbit": Rabbit}
 	food_objects = {"carrot": Carrot}
 
 	ae = AnimalEvolution(settings, food_objects, animal_objects)
 
-	# Plot the map
-	map = ae.printable_map()
-	print(map)
-	map_graph(map)
+	ae.run_cycles()
