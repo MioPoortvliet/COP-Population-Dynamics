@@ -1,7 +1,9 @@
 import numpy as np
 from random import sample, gauss, choice
 from src.visualization import map_graph
-from src.animals import Fox, Rabbit, Carrot
+from src.animals import Fox, Rabbit, Carrot, pathfinding
+from itertools import product
+from src.utils import nearest_nonzero_idx
 
 class AnimalEvolution():
 	def __init__(self, settings, food_objects, animal_objects):
@@ -25,7 +27,7 @@ class AnimalEvolution():
 	def spawn_entities(self):
 		for animal in self.settings["animals"]:
 			for i in range(self.settings[animal]):
-				self.animals.append(self.animal_objects[animal]())
+				self.animals.append(self.animal_objects[animal]["object"](**self.animal_objects[animal]["init"]))
 
 		for food in self.settings["foods"]:
 			for i in range(self.settings[food]):
@@ -37,7 +39,8 @@ class AnimalEvolution():
 
 		if positions == None:
 			# Generate coordinates
-			positions = list(zip(sample(range(self.settings["map_size"]), N_entities), sample(range(self.settings["map_size"]), N_entities)))
+			positions = sample(list(product(range(self.settings["map_size"]), range(self.settings["map_size"]))), N_entities)
+			print(positions)
 
 		for entity, position in zip(entities, positions):
 			entity.position = position
@@ -67,8 +70,13 @@ class AnimalEvolution():
 				if animal.steps_taken < animal.speed:
 					# Check for interactions
 					if not self.nearest_neighbour_intereactions(animal):
-						# If not, move animal
-						direction = round(gauss(animal.last_direction, animal.direction_randomness)) % 4
+						# If the animal had an interaction it is not allowed to play a turn
+						direction = self.pathfinding(animal)
+
+						if direction is None:
+							# If nothing is in range, move animal randomly
+							direction = round(gauss(animal.last_direction, animal.direction_randomness)) % 4
+
 						self.move_animal(animal, direction)
 
 				# If we have flagged the animal before do nothing
@@ -84,22 +92,67 @@ class AnimalEvolution():
 		"""A cycle is moving all animals until they can't anymore."""
 
 		for step in range(maxstep):
-			print(step)
 			if self.exhausted_animals == len(self.animals):
 				break
 			else:
 				self.step_forward()
 				self.delete_animals()
 
-	def run_cycles(self, maxcycles=50):
-		map_graph(self.printable_map())
+	def run_cycles(self, maxcycles=10):
+		self.stats = np.zeros(shape=(maxcycles, len(self.animal_objects)+len(self.food_objects)))
+
+		#map_graph(self.printable_map())
 		for cycle in range(maxcycles):
-			if len(self.animals) == 0 or len(self.animals)+len(self.foods) == self.settings["map_size"]**2:
+			print(cycle)
+			#print(self.map.nonzero()[0].size)
+			#print(len(self.animals), len(self.foods))
+			if (
+					len(self.animals) <= 1
+					or (np.any(self.stats[cycle-1,1::] == 0)
+						and cycle != 0
+						and self.settings["stop_at_zero"])
+			):
+				print("Premature ending")
 				break
-			else:
-				self.cycle()
-				self.reset_animals()
-				map_graph(self.printable_map())
+			self.cycle()
+			self.reset_animals()
+			self.spawn_food()
+			self.write_stats(cycle)
+
+			assert np.sum(self.stats[cycle, ::]) <= self.settings["map_size"]**2
+
+		return self.stats[:cycle,::]
+
+	def write_stats(self, cycle):
+		N_foods = len(self.food_objects)
+
+		for food in self.foods:
+			for i, obj in enumerate(self.food_objects.values()):
+				if isinstance(food, obj):
+					self.stats[cycle, i] += 1
+
+		for animal in self.animals:
+			for i, animal_id in enumerate(self.animal_objects.values()):
+				if isinstance(animal, animal_id["object"]):
+					self.stats[cycle, i+N_foods] += 1
+
+
+	def spawn_food(self):
+		for food_id in self.food_objects.keys():
+			zero_idx = np.argwhere(self.map == 0)
+			for coords in zero_idx:
+				if np.random.choice(
+						[False, True],
+						p=[1-self.settings["food_spawn_chance"][food_id],
+						   self.settings["food_spawn_chance"][food_id]]
+				):
+					coords = tuple(coords)
+					self.foods.append(self.food_objects[food_id]())
+					#print(self.foods[-1], self.map[coords])
+					self.foods[-1].position = coords
+					self.map[coords] = self.foods[-1]
+					#print(self.map[coords])
+
 
 	def reset_animals(self):
 		for animal in self.animals:
@@ -121,6 +174,21 @@ class AnimalEvolution():
 			self.foods.remove(id)
 
 
+	def pathfinding(self, animal):
+		nearest = nearest_nonzero_idx(self.map, *animal.position)
+		if nearest is None:
+			return False
+
+		else:
+			difference = nearest- np.array(animal.position)
+
+			if np.sum(difference**2) <= animal.sight_radius:
+				# we see something
+				return pathfinding(animal, self.map[tuple(nearest)], difference=difference)
+
+			else:
+				return False
+
 
 	def nearest_neighbour_intereactions(self, animal):
 		neighbours = np.mod(np.array(animal.position) + self.nn_array, self.settings["map_size"])
@@ -136,46 +204,53 @@ class AnimalEvolution():
 			# animal is fox
 			if isinstance(animal, Fox):
 				# next to rabbit
-				if isinstance(neighbour, Rabbit):
-					print("Rabbit gets eaten")
+				if isinstance(neighbour, Rabbit) and not neighbour.eaten:
+					#print("Rabbit gets eaten")
+					neighbour.gets_eaten()
 					self.animal_deletion_list.add(neighbour)
 					animal.eat()
 				elif isinstance(neighbour, Fox):
-					if animal.reproductive_drive > neighbour.reproductive_drive:
+					if animal.libido > animal.reproductive_drive and neighbour.libido > neighbour.reproductive_drive:
 						self.birth(Fox, neighbour_id, animal, neighbour)
-						animal.libido = 0
-						neighbour.libido = 0
 
 			# animal is rabbit
 			elif isinstance(animal, Rabbit):
-				# next to carrot
-				if isinstance(neighbour, Carrot):
-					print("Carrot gets eaten")
-					self.food_deletion_list.add(neighbour) # carrot is food
-					animal.eat()
 				# next to fox
-				elif isinstance(neighbour, Fox):
-					print("Rabit gets eaten")
+				if isinstance(neighbour, Fox):
+					#print("Rabit gets eaten")
+					animal.gets_eaten()
 					self.animal_deletion_list.add(animal)
 					neighbour.eat()
+				# next to carrot
+				elif isinstance(neighbour, Carrot) and not neighbour.eaten:
+					#print("Carrot gets eaten")
+					neighbour.gets_eaten()
+					self.food_deletion_list.add(neighbour) # carrot is food
+					animal.eat()
 				# next to rabbit
 				elif isinstance(neighbour, Rabbit):
 					if animal.libido > animal.reproductive_drive and neighbour.libido > neighbour.reproductive_drive:
 						self.birth(Rabbit, neighbour_id, animal, neighbour)
-						animal.libido = 0
-						neighbour.libido = 0
 
 
 	def birth(self, animal, postion, mom, dad):
 		for direction in range(4):
+			#print(direction)
 			coords = self.new_coords(postion, direction)
+
 			if self.map[coords] == 0:
-				print("Baby rabbit is born!")
+				#print("Baby is born!", animal)
 				mean_speed = (mom.speed + dad.speed ) / 2
 				mean_reproductive_drive = (mom.reproductive_drive + dad.reproductive_drive ) / 2
+
 				newanimal = animal(mean_speed, mean_reproductive_drive)
+
 				self.position_entities([newanimal], [coords])
 				self.animals.append(newanimal)
+
+				mom.libido = 0
+				dad.libido = 0
+				#print("breaking")
 				break
 
 
