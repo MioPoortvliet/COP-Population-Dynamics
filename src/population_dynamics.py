@@ -3,7 +3,25 @@ from random import sample, gauss, choice
 from src.visualization import map_graph
 from src.animals import Fox, Rabbit, Carrot, pathfinding
 from itertools import product
-from src.utils import nearest_nonzero_idx
+from src.utils import nearest_nonzero_idx, nonzero_idx
+
+"""----NOTES----
+It seems like it is a problem that carrots take up a tile
+We should separate food from animals
+Write program again lol more structured pathfinding algorithm, etc
+
+Bunnies keep dying or exploding in population size! No equilibrium to be found :(
+Why? Map seems to be too large and rabbits don't run into each other -> no kids
+Maybe even separated by carrots! Carrots should be transparent.
+
+Pathfinding should be better. 
+Priorities:
+Run from foxes (implement later)
+If hunger within 20% of max hunger, search for food
+Else search for mate
+"""
+
+
 
 class AnimalEvolution():
 	def __init__(self, settings, food_objects, animal_objects):
@@ -40,7 +58,6 @@ class AnimalEvolution():
 		if positions == None:
 			# Generate coordinates
 			positions = sample(list(product(range(self.settings["map_size"]), range(self.settings["map_size"]))), N_entities)
-			print(positions)
 
 		for entity, position in zip(entities, positions):
 			entity.position = position
@@ -60,11 +77,13 @@ class AnimalEvolution():
 		self.animal_deletion_list = set()
 		self.food_deletion_list = set()
 		for animal in self.animals:
-			# Animal starves?
-			if animal.hunger > animal.max_hunger:
+			# Animal old?
+			if animal.age > animal.max_age:
 				self.animal_deletion_list.add(animal)
-				print("Animal starves")
-
+			# Animal starves?
+			elif animal.hunger > animal.max_hunger:
+				self.animal_deletion_list.add(animal)
+				#print("Animal starves")
 			else:
 				# May animal move?
 				if animal.steps_taken < animal.speed:
@@ -72,11 +91,6 @@ class AnimalEvolution():
 					if not self.nearest_neighbour_intereactions(animal):
 						# If the animal had an interaction it is not allowed to play a turn
 						direction = self.pathfinding(animal)
-
-						if direction is None:
-							# If nothing is in range, move animal randomly
-							direction = round(gauss(animal.last_direction, animal.direction_randomness)) % 4
-
 						self.move_animal(animal, direction)
 
 				# If we have flagged the animal before do nothing
@@ -90,7 +104,6 @@ class AnimalEvolution():
 
 	def cycle(self, maxstep = 50):
 		"""A cycle is moving all animals until they can't anymore."""
-
 		for step in range(maxstep):
 			if self.exhausted_animals == len(self.animals):
 				break
@@ -99,7 +112,8 @@ class AnimalEvolution():
 				self.delete_animals()
 
 	def run_cycles(self, maxcycles=10):
-		self.stats = np.zeros(shape=(maxcycles, len(self.animal_objects)+len(self.food_objects)))
+		self.stats = np.zeros(shape=(maxcycles+1, len(self.animal_objects)+len(self.food_objects)))
+		self.write_stats(0)
 
 		#map_graph(self.printable_map())
 		for cycle in range(maxcycles):
@@ -117,11 +131,11 @@ class AnimalEvolution():
 			self.cycle()
 			self.reset_animals()
 			self.spawn_food()
-			self.write_stats(cycle)
+			self.write_stats(cycle+1)
 
 			assert np.sum(self.stats[cycle, ::]) <= self.settings["map_size"]**2
 
-		return self.stats[:cycle,::]
+		return self.stats[:cycle+1,::]
 
 	def write_stats(self, cycle):
 		N_foods = len(self.food_objects)
@@ -158,6 +172,8 @@ class AnimalEvolution():
 		for animal in self.animals:
 			animal.steps_taken = 0
 			animal.libido += 1
+			animal.hunger += 1
+			animal.age += 1
 
 		self.exhausted_animals = 0
 
@@ -175,19 +191,12 @@ class AnimalEvolution():
 
 
 	def pathfinding(self, animal):
-		nearest = nearest_nonzero_idx(self.map, *animal.position)
-		if nearest is None:
-			return False
+		other_idx = nonzero_idx(self.map, *animal.position)
+		if other_idx is None:
+			return round(gauss(animal.last_direction, animal.direction_randomness)) % 4
 
 		else:
-			difference = nearest- np.array(animal.position)
-
-			if np.sum(difference**2) <= animal.sight_radius:
-				# we see something
-				return pathfinding(animal, self.map[tuple(nearest)], difference=difference)
-
-			else:
-				return False
+			return pathfinding(animal, self.map, other_idx)
 
 
 	def nearest_neighbour_intereactions(self, animal):
@@ -210,8 +219,7 @@ class AnimalEvolution():
 					self.animal_deletion_list.add(neighbour)
 					animal.eat()
 				elif isinstance(neighbour, Fox):
-					if animal.libido > animal.reproductive_drive and neighbour.libido > neighbour.reproductive_drive:
-						self.birth(Fox, neighbour_id, animal, neighbour)
+					self.birth(Fox, neighbour_id, animal, neighbour)
 
 			# animal is rabbit
 			elif isinstance(animal, Rabbit):
@@ -221,40 +229,47 @@ class AnimalEvolution():
 					animal.gets_eaten()
 					self.animal_deletion_list.add(animal)
 					neighbour.eat()
+				# next to rabbit
+				elif isinstance(neighbour, Rabbit) and (not animal.food_check()) and (not neighbour.food_check()):
+					self.birth(Rabbit, neighbour_id, animal, neighbour)
 				# next to carrot
 				elif isinstance(neighbour, Carrot) and not neighbour.eaten:
 					#print("Carrot gets eaten")
 					neighbour.gets_eaten()
 					self.food_deletion_list.add(neighbour) # carrot is food
 					animal.eat()
-				# next to rabbit
-				elif isinstance(neighbour, Rabbit):
-					if animal.libido > animal.reproductive_drive and neighbour.libido > neighbour.reproductive_drive:
-						self.birth(Rabbit, neighbour_id, animal, neighbour)
 
 
 	def birth(self, animal, postion, mom, dad):
-		for direction in range(4):
-			#print(direction)
-			coords = self.new_coords(postion, direction)
+		print("attempting to fuck")
+		if not (mom.libido_check() and dad.libido_check()):
+			# Consent is important
+			print("not horny", mom.libido, mom.reproductive_drive)
+			return
+		else:
+			for direction in range(4):
+				#print(direction)
+				coords = self.new_coords(postion, direction)
 
-			if self.map[coords] == 0:
-				#print("Baby is born!", animal)
-				mean_speed = (mom.speed + dad.speed ) / 2
-				mean_reproductive_drive = (mom.reproductive_drive + dad.reproductive_drive ) / 2
+				if self.map[coords] == 0:
 
-				newanimal = animal(mean_speed, mean_reproductive_drive)
+					print("Baby is born!", mom.position, dad.position)
+					mean_speed = (mom.speed + dad.speed ) / 2
+					mean_reproductive_drive = (mom.reproductive_drive + dad.reproductive_drive ) / 2
 
-				self.position_entities([newanimal], [coords])
-				self.animals.append(newanimal)
+					newanimal = animal(mean_speed, mean_reproductive_drive)
 
-				mom.libido = 0
-				dad.libido = 0
-				#print("breaking")
-				break
+					self.position_entities([newanimal], [coords])
+					self.animals.append(newanimal)
 
-
-
+					#print(mom.hunger)
+					mom.hunger += int(newanimal.max_hunger / 2)
+					dad.hunger += int(newanimal.max_hunger / 2)
+					mom.libido = 0
+					dad.libido = 0
+					#print(mom.hunger)
+					#print("breaking")
+					break
 
 
 	def move_animal(self, animal, direction, recursions = 0):
