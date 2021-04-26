@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 def map_graph(map):
 	cb = plt.imshow(map)
 	cbar = plt.colorbar(cb)
-	cbar.set_ticks(range(1, 4))
-	cbar.set_ticklabels(["Carrot", "Rabbit", "Fox"])
+	cbar.set_ticks([2, 3, 10, 12, 13])
+	cbar.set_ticklabels(["Rabbit", "Fox", "Food", "Rabbit+Food", "Fox+Food"])
 	plt.show()
 
 
