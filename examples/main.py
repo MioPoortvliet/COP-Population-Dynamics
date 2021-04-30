@@ -1,6 +1,6 @@
 from src.animals import Fox, Rabbit, Carrot
 from src.population_dynamics import AnimalEvolution
-from src.visualization import map_graph, population_stats_plot, animal_stats_plot
+from src.visualization import map_graph, population_stats_plot, animal_stats_plot, MapPlot
 import numpy as np
 
 if __name__ == "__main__":
@@ -32,13 +32,18 @@ if __name__ == "__main__":
 		"nutritional_value":100
 	}
 
-	animal_objects = {"fox": {"object":Fox, "init":fox_inits}, "rabbit": {"object":Rabbit, "init":rabbit_inits}}
-	food_objects = {"carrot": Carrot}
+    animal_objects = {"fox": {"object":Fox, "init":fox_inits}, "rabbit": {"object":Rabbit, "init":rabbit_inits}}
+    food_objects = {"carrot": Carrot}
 
+    ae = AnimalEvolution(settings, food_objects, animal_objects)
+    #map_graph(ae.printable_map())
+    # We need pathfinding to food because the rabbits don't eat
 
-	ae = AnimalEvolution(settings, food_objects, animal_objects)
-	#map_graph(ae.printable_map())
-	# We need pathfinding to food because the rabbits don't eat
+    stats = ae.run_cycles(maxcycles=500)
+    #map_graph(ae.printable_map())
+    #for i in range(7):
+    #    stats = np.append(stats,ae.run_cycles(maxcycles=3), axis=0)
+        #map_graph(ae.printable_map())
 
 	stats, genes = ae.run_cycles(maxcycles=100)
 	#map_graph(ae.printable_map())

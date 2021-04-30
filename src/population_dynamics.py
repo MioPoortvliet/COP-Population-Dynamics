@@ -82,7 +82,7 @@ class AnimalEvolution():
 			map_identifier[entity.position] += entity.identifier
 
 		for entity in self.foods():
-			map_identifier[entity.position] += entity.identifier * 10
+			map_identifier[entity.position] += entity.identifier
 
 		return map_identifier
 
