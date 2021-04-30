@@ -22,7 +22,6 @@ Else search for mate
 """
 
 
-
 class AnimalEvolution():
 	def __init__(self, settings, food_objects, animal_objects):
 		self.settings = settings
@@ -33,13 +32,11 @@ class AnimalEvolution():
 		self.animal_map = np.zeros(shape=(self.settings["map_size"], self.settings["map_size"]), dtype=object)
 		self.food_map = np.zeros(shape=(self.settings["map_size"], self.settings["map_size"]), dtype=object)
 
-
 		self.position_entities(self.spawn_entities())
 
 		self.exhausted_animals = 0
 
 		self.nn_array = np.concatenate([np.eye(2, dtype=int), -np.eye(2, dtype=int)])
-
 
 	def animals(self):
 		return self.animal_map[self.animal_map.nonzero()]
@@ -47,15 +44,14 @@ class AnimalEvolution():
 	def foods(self):
 		return self.food_map[self.food_map.nonzero()]
 
-
 	def spawn_entities(self):
 		animals = []
 		foods = []
 		for animal in self.settings["animals"]:
 			for i in range(self.settings[animal]):
-				animals.append(self.animal_objects[animal]["object"](std=self.settings["animal_std"],**self.animal_objects[animal]["init"]))
-				animals[-1].age = randint(0, animals[-1].max_age-1)
-				print(animals[-1].age)
+				animals.append(self.animal_objects[animal]["object"](std=self.settings["animal_std"],
+																	 **self.animal_objects[animal]["init"]))
+				animals[-1].age = randint(0, animals[-1].max_age - 1)
 
 		for food in self.settings["foods"]:
 			for i in range(self.settings[food]):
@@ -63,13 +59,13 @@ class AnimalEvolution():
 
 		return animals + foods
 
-
 	def position_entities(self, entities, positions=None):
 		N_entities = len(entities)
 
 		if positions == None:
 			# Generate coordinates
-			positions = sample(list(product(range(self.settings["map_size"]), range(self.settings["map_size"]))), N_entities)
+			positions = sample(list(product(range(self.settings["map_size"]), range(self.settings["map_size"]))),
+							   N_entities)
 
 		for entity, position in zip(entities, positions):
 			entity.position = position
@@ -79,8 +75,6 @@ class AnimalEvolution():
 			else:
 				self.food_map[entity.position] = entity
 
-
-
 	def printable_map(self):
 		map_identifier = np.zeros(shape=(self.settings["map_size"], self.settings["map_size"]), dtype=np.int)
 
@@ -88,10 +82,9 @@ class AnimalEvolution():
 			map_identifier[entity.position] += entity.identifier
 
 		for entity in self.foods():
-			map_identifier[entity.position] += entity.identifier*10
+			map_identifier[entity.position] += entity.identifier * 10
 
 		return map_identifier
-
 
 	def step_forward(self):
 		self.animal_deletion_list = set()
@@ -101,21 +94,22 @@ class AnimalEvolution():
 			# Animal old?
 			if animal.age > animal.max_age:
 				self.animal_deletion_list.add(animal)
-				#print("Animal dies of age")
+			# print("Animal dies of age")
 			# Animal starves?
 			elif animal.hunger > animal.max_hunger:
 				self.animal_deletion_list.add(animal)
-				#print("Animal starves")
+			# print("Animal starves")
 			else:
 				# May animal move?
 				if animal.steps_taken < animal.speed:
 					# Check for interactions
-					if not self.food_map[animal.position] == 0: # This does not work for a fox
-						animal.eat(self.food_map[animal.position])
+					if animal.food_interaction(self.food_map):
+						# If we are on food, eat it (and remove the food from the map)
 						self.food_map[animal.position] = 0
+					# This is not elif, both can happen!!!
 					if not self.nearest_neighbour_intereactions(animal):
 						# If the animal had an interaction it is not allowed to play a turn
-						direction = animal.pathfinding(self.animal_map, self.food_map)#self.pathfinding(animal)
+						direction = animal.pathfinding(self.animal_map, self.food_map)  # self.pathfinding(animal)
 						self.move_animal(animal, direction)
 
 				# If we have flagged the animal before do nothing
@@ -127,7 +121,7 @@ class AnimalEvolution():
 					animal.steps_taken += 1
 					self.exhausted_animals += 1
 
-	def cycle(self, maxstep = 50):
+	def cycle(self, maxstep=50):
 		"""A cycle is moving all animals until they can't anymore."""
 		for step in range(maxstep):
 			if self.exhausted_animals == self.animal_map.nonzero()[0].size:
@@ -137,41 +131,41 @@ class AnimalEvolution():
 				self.delete_animals()
 
 	def run_cycles(self, maxcycles=10):
-		self.stats = np.zeros(shape=(maxcycles+1, len(self.animal_objects)*(8+1)+len(self.food_objects)))
+		self.stats = np.zeros(shape=(maxcycles + 1, len(self.animal_objects) + len(self.food_objects)))
+		self.animal_stats = np.zeros((maxcycles+1, len(self.animal_objects), 8, 2))
 		self.write_stats(0)
 
-		#map_graph(self.printable_map())
+		# map_graph(self.printable_map())
 		for cycle in range(maxcycles):
 			print(cycle)
-			#print(len(self.animals), len(self.foods))
 			if (
-					self.animal_map.nonzero()[0].size <= 1
-					or (np.any(self.stats[cycle-1,1::] == 0)
-						and cycle != 0
-						and self.settings["stop_at_zero"]) # this is double, whyyyy?????
+					np.any(self.stats[cycle - 1, 1::9] <= 1)
+					and cycle != 0
+					and self.settings["stop_at_zero"]
 			):
 				print("Premature ending")
 				break
 			self.cycle()
 			self.reset_animals()
 			self.spawn_food()
-			self.write_stats(cycle+1)
+			self.write_stats(cycle + 1)
 
-			# assert np.sum(self.stats[cycle, ::]) <= self.settings["map_size"]**2 # from old version where this could go wrong
+		# assert np.sum(self.stats[cycle, ::]) <= self.settings["map_size"]**2 # from old version where this could go wrong
 
-		return self.stats[:cycle+1,::]
+		return self.stats[:cycle + 1, ::], self.animal_stats[:cycle + 1, ::, ::, ::]
 
 	def write_stats(self, cycle):
-		N_foods = len(self.food_objects)
-		N_animals = len(self.animal_objects)
+		all_animals_on_map = self.animals()
+		# Animal ID, properties+Animal number,
+		animal_stats = np.zeros((len(all_animals_on_map), 9))
 
 		for food in self.foods():
 			for i, obj in enumerate(self.food_objects.values()):
 				if isinstance(food, obj):
 					self.stats[cycle, i] += 1
 
-		for animal in self.animals():
-			for i, animal_id in enumerate(self.animal_objects.values()):
+		for k, animal in enumerate(all_animals_on_map):
+			for j, animal_id in enumerate(self.animal_objects.values()):
 				if isinstance(animal, animal_id["object"]):
 					animal_properties = np.array([
 						animal.speed,
@@ -184,18 +178,18 @@ class AnimalEvolution():
 						animal.libido
 					])
 
-					animal_idx_min = i*(animal_properties.size+1)+N_foods
-					animal_idx_max = (i+1)*(animal_properties.size+1)+N_foods
+					self.stats[cycle, i+1+j] += 1
+					animal_stats[k, :-1:] = animal_properties
+					animal_stats[k, -1] = j
 
-					self.stats[cycle, animal_idx_min] += 1
-					self.stats[cycle, animal_idx_min+1:animal_idx_max:] += animal_properties
+					break # We found the right animal, break inner loop
 
-		for i, animal_id in enumerate(self.animal_objects.values()):
-			animal_idx_min = i*(animal_properties.size+1)+N_foods
-			animal_idx_max = (i+1)*(animal_properties.size+1)+N_foods
-
-			# Divide by population size for the average
-			self.stats[cycle, animal_idx_min+1:animal_idx_max] /= self.stats[cycle, animal_idx_min]
+		for m in range(8):
+			for i in range(len(self.animal_objects)):
+				#print(animal_stats[animal_stats[::, -1] == i][::, m])
+				self.animal_stats[cycle, i, m, 0] = np.mean(animal_stats[animal_stats[::, -1] == i][::, m])
+				self.animal_stats[cycle, i, m, 1] = np.std(animal_stats[animal_stats[::, -1] == i][::, m], ddof=0)
+				#print(self.animal_stats[cycle, i, ::, ::])
 
 
 	def spawn_food(self):
@@ -204,16 +198,15 @@ class AnimalEvolution():
 			for coords in zero_idx:
 				if np.random.choice(
 						[False, True],
-						p=[1-self.settings["food_spawn_chance"][food_id],
+						p=[1 - self.settings["food_spawn_chance"][food_id],
 						   self.settings["food_spawn_chance"][food_id]]
 				):
 					coords = tuple(coords)
 
-					#print(self.foods[-1], self.map[coords])
+					# print(self.foods[-1], self.map[coords])
 					self.food_map[coords] = self.food_objects[food_id]()
 					self.food_map[coords].position = coords
-					#print(self.map[coords])
-
+				# print(self.map[coords])
 
 	def reset_animals(self):
 		for animal in self.animals():
@@ -224,7 +217,6 @@ class AnimalEvolution():
 
 		self.exhausted_animals = 0
 
-
 	def delete_animals(self):
 		for id in self.animal_deletion_list:
 			# Make sure to remove it from the map too!
@@ -233,7 +225,6 @@ class AnimalEvolution():
 		for id in self.food_deletion_list:
 			# Make sure to remove it from the map too!
 			self.food_map[id.position] = 0
-
 
 	def nearest_neighbour_intereactions(self, animal):
 		neighbours = np.mod(np.array(animal.position) + self.nn_array, self.settings["map_size"])
@@ -249,52 +240,50 @@ class AnimalEvolution():
 			else:
 				animal_deletion, birth = animal.interact(neighbour_animal)
 
-				if not animal_deletion is None:
-					self.animal_deletion_list.add(animal_deletion) # Are interactions with a dead animal possible???
+				if animal_deletion is not None:
+					self.animal_deletion_list.add(animal_deletion)  # Are interactions with a dead animal possible???
 
 				if birth:
 					self.sex_attempt(type(animal), animal.position, animal, neighbour_animal)
 
-
 	def sex_attempt(self, animal, postion, mom, dad):
 		# Make them genderless
-		#print("attempting to fuck")
+		# print("attempting to fuck")
 		if not (mom.libido_check() and dad.libido_check()):
 			# Consent is important
-			#print("not horny", dad.libido, dad.reproductive_drive)
+			# print("not horny", dad.libido, dad.reproductive_drive)
 			mom.libido -= 5
 			return
 		else:
 			for direction in range(4):
-				#print(direction)
+				# print(direction)
 				coords = self.new_coords(postion, direction)
 
 				if self.animal_map[coords] == 0:
-
-					#print("Baby is born!", mom.position, dad.position)
+					# print("Baby is born!", mom.position, dad.position)
 
 					newanimal = animal(
-						mean_speed=(mom.speed + dad.speed ) / 2,
-						mean_reproductive_drive=(mom.reproductive_drive + dad.reproductive_drive ) / 2,
-						mean_sight_radius=(mom.sight_radius + dad.sight_radius ) / 2,
-						mean_max_hunger=(mom.max_hunger + dad.max_hunger ) / 2,
-						mean_max_age=(mom.max_age + dad.max_age ) / 2,
-						std=self.settings["animal_std"]
+						mean_speed=(mom.speed + dad.speed) / 2,
+						mean_reproductive_drive=(mom.reproductive_drive + dad.reproductive_drive) / 2,
+						mean_sight_radius=(mom.sight_radius + dad.sight_radius) / 2,
+						mean_max_hunger=(mom.max_hunger + dad.max_hunger) / 2,
+						mean_max_age=(mom.max_age + dad.max_age) / 2,
+						std=self.settings["animal_std"],
+						nutritional_value=(mom.nutritional_value+dad.nutritional_value)/2
 					)
 
 					self.position_entities([newanimal], [coords])
 
-					#print(mom.hunger)
+					# print(mom.hunger)
 					mom.hunger += int(newanimal.max_hunger / 2)
 					dad.hunger += int(newanimal.max_hunger / 2)
 					mom.libido = 0
 					dad.libido = 0
-					#print(mom.hunger)
-					#print("breaking")
+					# print(mom.hunger)
+					# print("breaking")
 					break
 
-
-	def move_animal(self, animal, direction, recursions = 0):
+	def move_animal(self, animal, direction, recursions=0):
 		new_pos = self.new_coords(animal.position, direction)
 		if not self.animal_map[new_pos]:
 			# Walking costs food
@@ -311,7 +300,7 @@ class AnimalEvolution():
 
 		elif recursions < 4:
 			animal.last_direction += choice([-1, 1])
-			self.move_animal(animal, direction, recursions+1)
+			self.move_animal(animal, direction, recursions + 1)
 
 		else:
 			pass

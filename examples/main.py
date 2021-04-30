@@ -8,16 +8,29 @@ if __name__ == "__main__":
 		"map_size":50,
 		"animals": ["fox", "rabbit"],
 		"foods": ["carrot", ],
-		"fox":0,
-		"rabbit":80,
-		"carrot":800,
-		"food_spawn_chance": {"carrot": 0.02},
-		"stop_at_zero":False,
+		"fox":10,
+		"rabbit":200,
+		"carrot":1200,
+		"food_spawn_chance": {"carrot": 0.05},
+		"stop_at_zero":True,
 		"animal_std" : 3
 	}
 
-	fox_inits = {"mean_speed":5, "mean_reproductive_drive":10, "mean_sight_radius":1, "mean_max_hunger":50}
-	rabbit_inits = {"mean_speed":3, "mean_reproductive_drive":5, "mean_sight_radius":5, "mean_max_hunger":150, "mean_max_age":100}
+	fox_inits = {
+		"mean_speed":3,
+		"mean_reproductive_drive":10,
+		"mean_sight_radius":1,
+		"mean_max_hunger":120,
+		"mean_max_age":300
+	}
+	rabbit_inits = {
+		"mean_speed":3,
+		"mean_reproductive_drive":5,
+		"mean_sight_radius":1,
+		"mean_max_hunger":60,
+		"mean_max_age":100,
+		"nutritional_value":100
+	}
 
 	animal_objects = {"fox": {"object":Fox, "init":fox_inits}, "rabbit": {"object":Rabbit, "init":rabbit_inits}}
 	food_objects = {"carrot": Carrot}
@@ -27,7 +40,7 @@ if __name__ == "__main__":
 	#map_graph(ae.printable_map())
 	# We need pathfinding to food because the rabbits don't eat
 
-	stats = ae.run_cycles(maxcycles=200)
+	stats, genes = ae.run_cycles(maxcycles=10)
 	#map_graph(ae.printable_map())
 	#for i in range(7):
 	#	stats = np.append(stats,ae.run_cycles(maxcycles=3), axis=0)
@@ -35,6 +48,9 @@ if __name__ == "__main__":
 
 	#stats = np.append(stats,ae.run_cycles(maxcycles=1000), axis=0)
 	#map_graph(ae.printable_map())
+
 	population_stats_plot(stats, food_objects, animal_objects)
-	animal_stats_plot(stats, relative_idx=len(food_objects)+9*1+1, title="Rabbits", labels=(0, 3))
-	animal_stats_plot(stats, relative_idx=len(food_objects)+9*1+1, title="Rabbits", labels=(3, -1))
+
+	for i, animal in enumerate(animal_objects.keys()):
+		animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(0, 3))
+		animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(3, 8))
