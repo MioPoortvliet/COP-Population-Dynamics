@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import numpy as np
 
 def map_graph(simulation_map):
     figure, ax = plt.subplots(figsize=(8,6))
@@ -24,27 +25,26 @@ def population_stats_plot(stats, food_objects, animal_objects):
 		]
 	food_names = list(food_objects.keys())
 	animal_names = list(animal_objects.keys())
-	for i in range(len(food_names)):
-		plt.plot(stats[::,i], label=food_names[i])
-	for j in range(len(animal_names)):
-		#print(j, i+j*len(stat_labels)+1)
-		plt.plot(stats[::,i+j*(len(stat_labels)+1)+1], label=animal_names[j])
+	names = food_names+animal_names
+	for i in range(len(names)):
+		plt.plot(stats[::,i], label=names[i])
 
 	plt.legend()
 	plt.show()
 
-def animal_stats_plot(stats, relative_idx, title=""):
+def animal_stats_plot(stats, title="", labels=(0, 8)):
+	x = np.arange(stats.shape[0])
 	stat_labels = [		"speed",
 						"reproductive_drive",
 						"sight_radius",
 						"max_hunger",
 						"max_age",
 						"age",
-						"hunger"#,
-						#"libido"
+						"hunger",
+						"libido"
 		]
-	for i in range(len(stat_labels)):
-		plt.plot(stats[::,i+relative_idx], label=stat_labels[i])
+	for i, label in enumerate(stat_labels[labels[0]:labels[1]]):
+		plt.errorbar(x=x, y=stats[::, i+labels[0], 0], label=label, yerr=stats[::, i+labels[0], 1])
 
 	plt.legend()
 	plt.title(title)
