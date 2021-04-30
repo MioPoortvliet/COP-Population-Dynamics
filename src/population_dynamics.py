@@ -24,6 +24,7 @@ Else search for mate
 
 class AnimalEvolution():
 	def __init__(self, settings, food_objects, animal_objects):
+        mpl.use('Qt5Agg')
 		self.settings = settings
 		self.animal_objects = animal_objects
 		self.food_objects = food_objects
