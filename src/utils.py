@@ -1,4 +1,5 @@
 import numpy as np
+from numba import njit
 
 def minimum_int(num, min_num=1):
 	num = int(num)
@@ -22,7 +23,7 @@ def nearest_nonzero_idx(a,x,y):
 		return idx[((idx - [x,y])**2).sum(1).argmin()]
 
 
-def nonzero_idx(a,x,y):
+def nonzero_idx(a,x,y) -> np.ndarray:
 	""""From https://stackoverflow.com/questions/43306291/find-the-nearest-nonzero-element-and-corresponding-index-in-a-2d-numpy-array"""
 	idx = np.argwhere(a)
 

@@ -17,7 +17,7 @@ if __name__ == "__main__":
 	}
 
 	fox_inits = {"mean_speed":5, "mean_reproductive_drive":10, "mean_sight_radius":1, "mean_max_hunger":50}
-	rabbit_inits = {"mean_speed":3, "mean_reproductive_drive":2, "mean_sight_radius":5, "mean_max_hunger":150, "mean_max_age":100}
+	rabbit_inits = {"mean_speed":3, "mean_reproductive_drive":5, "mean_sight_radius":5, "mean_max_hunger":150, "mean_max_age":100}
 
 	animal_objects = {"fox": {"object":Fox, "init":fox_inits}, "rabbit": {"object":Rabbit, "init":rabbit_inits}}
 	food_objects = {"carrot": Carrot}
@@ -27,7 +27,7 @@ if __name__ == "__main__":
 	#map_graph(ae.printable_map())
 	# We need pathfinding to food because the rabbits don't eat
 
-	stats = ae.run_cycles(maxcycles=500)
+	stats = ae.run_cycles(maxcycles=200)
 	#map_graph(ae.printable_map())
 	#for i in range(7):
 	#	stats = np.append(stats,ae.run_cycles(maxcycles=3), axis=0)
@@ -36,4 +36,5 @@ if __name__ == "__main__":
 	#stats = np.append(stats,ae.run_cycles(maxcycles=1000), axis=0)
 	#map_graph(ae.printable_map())
 	population_stats_plot(stats, food_objects, animal_objects)
-	animal_stats_plot(stats, len(food_objects)+9*1+1, title="Rabbits")
+	animal_stats_plot(stats, relative_idx=len(food_objects)+9*1+1, title="Rabbits", labels=(0, 3))
+	animal_stats_plot(stats, relative_idx=len(food_objects)+9*1+1, title="Rabbits", labels=(3, -1))

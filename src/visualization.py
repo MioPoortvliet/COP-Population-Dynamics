@@ -30,18 +30,18 @@ def population_stats_plot(stats, food_objects, animal_objects):
 	plt.legend()
 	plt.show()
 
-def animal_stats_plot(stats, relative_idx, title=""):
+def animal_stats_plot(stats, relative_idx, title="", labels=(0, -1)):
 	stat_labels = [		"speed",
 						"reproductive_drive",
 						"sight_radius",
 						"max_hunger",
 						"max_age",
 						"age",
-						"hunger"#,
-						#"libido"
+						"hunger",
+						"libido"
 		]
-	for i in range(len(stat_labels)):
-		plt.plot(stats[::,i+relative_idx], label=stat_labels[i])
+	for i in range(len(stat_labels[labels[0]:labels[-1]])):
+		plt.plot(stats[::,i+relative_idx+labels[0]], label=stat_labels[i+labels[0]])
 
 	plt.legend()
 	plt.title(title)
