@@ -3,7 +3,7 @@ from random import sample, gauss, choice, randint
 from src.visualization import map_graph
 from src.animals import Fox, Rabbit, Carrot, Animal
 from itertools import product
-from src.utils import nearest_nonzero_idx, nonzero_idx
+from src.utils import nearest_nonzero_idx, nonzero_idx, process_statistics
 
 """----NOTES----
 It seems like it is a problem that carrots take up a tile
@@ -184,12 +184,8 @@ class AnimalEvolution():
 
 					break # We found the right animal, break inner loop
 
-		for m in range(8):
-			for i in range(len(self.animal_objects)):
-				#print(animal_stats[animal_stats[::, -1] == i][::, m])
-				self.animal_stats[cycle, i, m, 0] = np.mean(animal_stats[animal_stats[::, -1] == i][::, m])
-				self.animal_stats[cycle, i, m, 1] = np.std(animal_stats[animal_stats[::, -1] == i][::, m], ddof=0)
-				#print(self.animal_stats[cycle, i, ::, ::])
+		process_statistics(self.animal_stats[cycle, ::, ::, ::], animal_stats, len(self.animal_objects))
+
 
 
 	def spawn_food(self):
