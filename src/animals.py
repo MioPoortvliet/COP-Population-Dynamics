@@ -1,6 +1,7 @@
 import numpy as np
 from random import choice, gauss, randint
 from src.utils import minimum_int, direction_from_difference, nonzero_idx
+from numba import njit
 
 
 class Entity():
@@ -59,7 +60,7 @@ class Fox(Animal):
 		super(Fox, self).__init__(*args, **kwargs)
 
 	def pathfinding(self, animal_map, food_map):
-		animals_in_sight, sorted_animals_idx = pathfinding_check(self, animal_map)
+		animals_in_sight, sorted_animals_idx = pathfinding_check(self.position, self.sight_radius, animal_map.astype(np.bool_))
 
 		# Check if there are entities within sight radius
 		if animals_in_sight > 0:
@@ -107,8 +108,10 @@ class Rabbit(Animal):
 		super(Rabbit, self).__init__(*args, **kwargs)
 
 	def pathfinding(self, animal_map, food_map):
-		animals_in_sight, sorted_animals_idx = pathfinding_check(self, animal_map)
-		foods_in_sight, sorted_foods_idx = pathfinding_check(self, food_map)
+		#animals_in_sight, sorted_animals_idx = pathfinding_check(self, animal_map)
+		#foods_in_sight, sorted_foods_idx = pathfinding_check(self, food_map)
+		animals_in_sight, sorted_animals_idx = pathfinding_check(self.position, self.sight_radius, animal_map.astype(np.bool_))
+		foods_in_sight, sorted_foods_idx = pathfinding_check(self.position, self.sight_radius, food_map.astype(np.bool_))
 
 		# Check if there are entities within sight radius
 		if animals_in_sight > 0:
@@ -169,23 +172,21 @@ class Carrot(Entity):
 		super(Carrot, self).__init__()
 		self.nutritional_value = 15
 
-
-def pathfinding_check(animal, entity_map):
-	other_idx = nonzero_idx(entity_map, *animal.position)
+#@njit
+def pathfinding_check(animal_position, animal_sight_radius, entity_map):
+	other_idx = nonzero_idx(entity_map.astype(np.bool_), *animal_position)
 	if other_idx is None:
 		return 0, None
 
-	coordinates = animal.position
-
 	#nearest = other_idx[((other_idx - [coordinates[0],coordinates[1]])**2).sum(1).argmin()]
-	differences = np.sum((other_idx - np.array(animal.position))**2, axis=1) <= animal.sight_radius**2
+	differences = np.sum((other_idx - np.array(animal_position))**2, axis=1) <= animal_sight_radius**2
 
 	# Are there entities within range?
 	n = np.sum(differences)
 	if n > 0:
 		if n < other_idx.shape[0]:
 			# Only sort the first n
-			nearest_sorted = other_idx[np.argpartition(((other_idx - [coordinates[0], coordinates[1]]) ** 2).sum(1), kth=n)][:n]
+			nearest_sorted = other_idx[np.argpartition(((other_idx - [animal_position[0], animal_position[1]]) ** 2).sum(1), kth=n)][:n]
 		elif n > 1:
 			# Sort all n
 			nearest_sorted = np.sort(other_idx)
