@@ -55,7 +55,7 @@ class Animal(Entity):
 
 class Fox(Animal):
 	def __init__(self, *args, **kwargs):
-		self.identifier = 3
+		self.identifier = 4
 		super(Fox, self).__init__(*args, **kwargs)
 
 	def pathfinding(self, entity_map):
