@@ -1,5 +1,6 @@
 import numpy as np
 from numba import njit
+import numba
 
 def minimum_int(num, min_num=1):
 	num = int(num)
@@ -22,19 +23,19 @@ def nearest_nonzero_idx(a,x,y):
 	else:
 		return idx[((idx - [x,y])**2).sum(1).argmin()]
 
-
-def nonzero_idx(a,x,y) -> np.ndarray:
+@njit
+def nonzero_idx(a,x,y):
 	""""From https://stackoverflow.com/questions/43306291/find-the-nearest-nonzero-element-and-corresponding-index-in-a-2d-numpy-array"""
 	idx = np.argwhere(a)
 
 	# If (x,y) itself is also non-zero, we want to avoid those, so delete that
 	# But, if we are sure that (x,y) won't be non-zero, skip the next step
-	idx = idx[~(idx == [x,y]).all(1)]
+	#idx = idx[~np.array_equal(idx == [x,y]).all(1)]
 
-	if idx.size == 0:
-		return None
-	else:
+	if np.array_equal(idx, np.array([x,y])):
 		return idx
+	else:
+		return None
 
 
 def direction_from_difference(difference):
