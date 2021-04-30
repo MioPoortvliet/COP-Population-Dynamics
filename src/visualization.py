@@ -9,7 +9,7 @@ def map_graph(simulation_map):
     norm = mpl.colors.Normalize(vmin=2, vmax=13)
     map_image = ax.imshow(simulation_map, norm=norm, cmap=cmap)
     cbar = figure.colorbar(map_image)
-        self.cbar.set_ticks(np.array([1, 2, 3 , 4, 5])+.5)
+    cbar.set_ticks(np.array([1, 2, 3 , 4, 5])+.5)
     cbar.set_ticklabels(["Carrot", "Rabbit", "Rabbit+Carrot", "Fox", "Fox+Carrot"])
     plt.show()
 
