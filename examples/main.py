@@ -39,13 +39,7 @@ if __name__ == "__main__":
     #map_graph(ae.printable_map())
     # We need pathfinding to food because the rabbits don't eat
 
-    stats = ae.run_cycles(maxcycles=500)
-    #map_graph(ae.printable_map())
-    #for i in range(7):
-    #    stats = np.append(stats,ae.run_cycles(maxcycles=3), axis=0)
-        #map_graph(ae.printable_map())
-
-    stats, genes = ae.run_cycles(maxcycles=100)
+    stats, genes = ae.run_cycles(maxcycles=500)
     #map_graph(ae.printable_map())
     #for i in range(7):
     #    stats = np.append(stats,ae.run_cycles(maxcycles=3), axis=0)

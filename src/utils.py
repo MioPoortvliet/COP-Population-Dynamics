@@ -57,7 +57,11 @@ def direction_from_difference(difference):
 def process_statistics(to_write, to_read, N):
 	for m in range(8):
 		for i in range(N):
-			# print(animal_stats[animal_stats[::, -1] == i][::, m])
-			to_write[i, m, 0] = np.mean(to_read[to_read[::, -1] == i][::, m])
-			to_write[i, m, 1] = np.std(to_read[to_read[::, -1] == i][::, m])
+			to_read_sum = np.sum(to_read[to_read[::, -1] == i][::, m])
+			if to_read_sum == 0:
+				pass
+			else:
+				# print(animal_stats[animal_stats[::, -1] == i][::, m])
+				to_write[i, m, 0] = to_read_sum / np.count_nonzero(to_read[to_read[::, -1] == i][::, m])
+				to_write[i, m, 1] = np.std(to_read[to_read[::, -1] == i][::, m])
 	# print(self.animal_stats[cycle, i, ::, ::])
