@@ -53,7 +53,7 @@ class AnimalEvolution():
 		foods = []
 		for animal in self.settings["animals"]:
 			for i in range(self.settings[animal]):
-				animals.append(self.animal_objects[animal]["object"](**self.animal_objects[animal]["init"]))
+				animals.append(self.animal_objects[animal]["object"](std=self.settings["animal_std"],**self.animal_objects[animal]["init"]))
 				animals[-1].age = randint(0, animals[-1].max_age-1)
 				print(animals[-1].age)
 
@@ -96,6 +96,7 @@ class AnimalEvolution():
 	def step_forward(self):
 		self.animal_deletion_list = set()
 		self.food_deletion_list = set()
+
 		for animal in self.animals():
 			# Animal old?
 			if animal.age > animal.max_age:
@@ -109,7 +110,7 @@ class AnimalEvolution():
 				# May animal move?
 				if animal.steps_taken < animal.speed:
 					# Check for interactions
-					if not self.food_map[animal.position] == 0:
+					if not self.food_map[animal.position] == 0: # This does not work for a fox
 						animal.eat(self.food_map[animal.position])
 						self.food_map[animal.position] = 0
 					if not self.nearest_neighbour_intereactions(animal):
@@ -136,7 +137,7 @@ class AnimalEvolution():
 				self.delete_animals()
 
 	def run_cycles(self, maxcycles=10):
-		self.stats = np.zeros(shape=(maxcycles+1, len(self.animal_objects)+len(self.food_objects)))
+		self.stats = np.zeros(shape=(maxcycles+1, len(self.animal_objects)*(8+1)+len(self.food_objects)))
 		self.write_stats(0)
 
 		#map_graph(self.printable_map())
@@ -147,7 +148,7 @@ class AnimalEvolution():
 					self.animal_map.nonzero()[0].size <= 1
 					or (np.any(self.stats[cycle-1,1::] == 0)
 						and cycle != 0
-						and self.settings["stop_at_zero"])
+						and self.settings["stop_at_zero"]) # this is double, whyyyy?????
 			):
 				print("Premature ending")
 				break
@@ -156,12 +157,13 @@ class AnimalEvolution():
 			self.spawn_food()
 			self.write_stats(cycle+1)
 
-			assert np.sum(self.stats[cycle, ::]) <= self.settings["map_size"]**2
+			# assert np.sum(self.stats[cycle, ::]) <= self.settings["map_size"]**2 # from old version where this could go wrong
 
 		return self.stats[:cycle+1,::]
 
 	def write_stats(self, cycle):
 		N_foods = len(self.food_objects)
+		N_animals = len(self.animal_objects)
 
 		for food in self.foods():
 			for i, obj in enumerate(self.food_objects.values()):
@@ -171,7 +173,29 @@ class AnimalEvolution():
 		for animal in self.animals():
 			for i, animal_id in enumerate(self.animal_objects.values()):
 				if isinstance(animal, animal_id["object"]):
-					self.stats[cycle, i+N_foods] += 1
+					animal_properties = np.array([
+						animal.speed,
+						animal.reproductive_drive,
+						animal.sight_radius,
+						animal.max_hunger,
+						animal.max_age,
+						animal.age,
+						animal.hunger,
+						animal.libido
+					])
+
+					animal_idx_min = i*(animal_properties.size+1)+N_foods
+					animal_idx_max = (i+1)*(animal_properties.size+1)+N_foods
+
+					self.stats[cycle, animal_idx_min] += 1
+					self.stats[cycle, animal_idx_min+1:animal_idx_max:] += animal_properties
+
+		for i, animal_id in enumerate(self.animal_objects.values()):
+			animal_idx_min = i*(animal_properties.size+1)+N_foods
+			animal_idx_max = (i+1)*(animal_properties.size+1)+N_foods
+
+			# Divide by population size for the average
+			self.stats[cycle, animal_idx_min+1:animal_idx_max] /= self.stats[cycle, animal_idx_min]
 
 
 	def spawn_food(self):
@@ -226,17 +250,18 @@ class AnimalEvolution():
 				animal_deletion, birth = animal.interact(neighbour_animal)
 
 				if not animal_deletion is None:
-					self.animal_deletion_list.add(animal_deletion)
+					self.animal_deletion_list.add(animal_deletion) # Are interactions with a dead animal possible???
 
 				if birth:
-					self.birth(type(animal), animal.position, animal, neighbour_animal)
+					self.sex_attempt(type(animal), animal.position, animal, neighbour_animal)
 
 
-	def birth(self, animal, postion, mom, dad):
+	def sex_attempt(self, animal, postion, mom, dad):
+		# Make them genderless
 		#print("attempting to fuck")
 		if not (mom.libido_check() and dad.libido_check()):
 			# Consent is important
-			print("not horny", dad.libido, dad.reproductive_drive)
+			#print("not horny", dad.libido, dad.reproductive_drive)
 			mom.libido -= 5
 			return
 		else:
@@ -246,11 +271,16 @@ class AnimalEvolution():
 
 				if self.animal_map[coords] == 0:
 
-					print("Baby is born!", mom.position, dad.position)
-					mean_speed = (mom.speed + dad.speed ) / 2
-					mean_reproductive_drive = (mom.reproductive_drive + dad.reproductive_drive ) / 2
+					#print("Baby is born!", mom.position, dad.position)
 
-					newanimal = animal(mean_speed, mean_reproductive_drive)
+					newanimal = animal(
+						mean_speed=(mom.speed + dad.speed ) / 2,
+						mean_reproductive_drive=(mom.reproductive_drive + dad.reproductive_drive ) / 2,
+						mean_sight_radius=(mom.sight_radius + dad.sight_radius ) / 2,
+						mean_max_hunger=(mom.max_hunger + dad.max_hunger ) / 2,
+						mean_max_age=(mom.max_age + dad.max_age ) / 2,
+						std=self.settings["animal_std"]
+					)
 
 					self.position_entities([newanimal], [coords])
 

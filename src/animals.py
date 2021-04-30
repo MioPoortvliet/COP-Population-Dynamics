@@ -6,7 +6,7 @@ from src.utils import minimum_int, direction_from_difference, nonzero_idx
 class Entity():
 	def __init__(self):
 		self.position = (None, None)
-		self.eaten = False
+		self.eaten = False # Flag variable
 		self.nutritional_value = 15
 
 	def gets_eaten(self):
@@ -16,7 +16,7 @@ class Entity():
 
 class Animal(Entity):
 
-	def __init__(self, mean_speed=2, mean_reproductive_drive=4, mean_sight_radius=1, std=1, max_hunger=25, max_age=20):
+	def __init__(self, mean_speed, mean_reproductive_drive, mean_sight_radius, std, mean_max_hunger, mean_max_age):
 		# Spatial properties
 		super(Animal, self).__init__()
 
@@ -24,10 +24,10 @@ class Animal(Entity):
 		self.speed = minimum_int(gauss(mean_speed, std))
 		self.reproductive_drive = minimum_int(gauss(mean_reproductive_drive, std))
 		self.sight_radius = minimum_int(gauss(mean_sight_radius, std))
-		self.max_hunger = minimum_int(gauss(max_hunger, std*3))
+		self.max_hunger = minimum_int(gauss(mean_max_hunger, std*3))
 		self.last_direction = randint(0, 3)
 		self.direction_randomness = 0.4
-		self.max_age = minimum_int(gauss(max_age, std*3))
+		self.max_age = minimum_int(gauss(mean_max_age, std*3))
 
 		# For keeping track of stuff
 		self.steps_taken = 0
@@ -39,9 +39,9 @@ class Animal(Entity):
 		self.hunger = max((0, self.hunger-other.nutritional_value))
 		#print("chomp")
 
-	def food_check(self, tresh=0.4):
+	def food_check(self, treshold=0.4):
 		"""Returns true if the animal is hungry and false if the animal is not hungry"""
-		if self.hunger > (self.max_hunger * tresh):
+		if self.hunger > (self.max_hunger * treshold):
 			return True
 		else:
 			return False
@@ -101,11 +101,11 @@ class Rabbit(Animal):
 
 
 			# Nothing in priorities?
-			return round(gauss(self.last_direction, self.direction_randomness)) % 4
+			#return round(gauss(self.last_direction, self.direction_randomness)) % 4
 		if foods_in_sight > 0:
 			for other_idx in sorted_foods_idx:
 				other = food_map[tuple(other_idx)]
-				if isinstance(other, Carrot) and self.food_check(tresh=0.95):
+				if isinstance(other, Carrot) and self.food_check():
 					difference = other_idx - np.array(self.position)
 					#print("i'm hungry", animal.position, other.position)
 					return direction_from_difference(difference)
@@ -121,13 +121,13 @@ class Rabbit(Animal):
 			# print("Rabit gets eaten")
 			self.gets_eaten()
 			neighbour_animal.eat(self)
-			return self, False
+			return self, False # Deleted animal, Make baby?
 		# next to rabbit
 		elif isinstance(neighbour_animal, Rabbit) and (not self.food_check()) and (not neighbour_animal.food_check()) and self.libido_check():
-			return None, True
+			return None, True # Deleted animal, Make baby?
 		# next to carrot
 		else:
-			return None, False
+			return None, False # Deleted animal, Make baby?
 
 
 class Carrot(Entity):
