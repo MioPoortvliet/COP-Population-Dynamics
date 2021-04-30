@@ -6,6 +6,7 @@ from matplotlib.colors import LinearSegmentedColormap
 
 class MapAnimation:
     def __init__(self, simulation):  
+        mpl.use('Qt5Agg'
         self.sim = simulation
         self.figure, self.ax = plt.subplots(figsize=(8,6))
         colors= ["green","orange","white","white","red","red"]
