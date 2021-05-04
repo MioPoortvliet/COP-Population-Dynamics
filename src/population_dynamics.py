@@ -138,13 +138,23 @@ class AnimalEvolution():
 		# map_graph(self.printable_map())
 		for cycle in range(maxcycles):
 			print(cycle)
-			if (
-					np.any(self.stats[cycle - 1, 1::9] <= 1)
-					and cycle != 0
-					and self.settings["stop_at_zero"]
-			):
-				print("Premature ending")
-				break
+			if np.any(self.stats[cycle - 1, 1::] <= 1) and cycle != 0:
+				if self.settings["stop_at_zero"]:
+					# There are not enough animals alive
+					print("Premature ending")
+					break
+
+				else:
+					for i, animal_key in enumerate(self.animal_objects.keys()):
+						if self.stats[cycle-1, 1+i] <= 1:
+							print(f"{animal_key} is spawned!")
+							animal = self.animal_objects[animal_key]["object"](
+								**self.animal_objects[animal_key]["init"],
+								std=self.settings["animal_std"]
+							)
+							zero_idx = np.argwhere(self.animal_map == 0)
+							position = zero_idx[randint(0, zero_idx.shape[0]),::]
+							self.position_entities([animal], positions=[position])
 			self.cycle()
 			self.reset_animals()
 			self.spawn_food()
