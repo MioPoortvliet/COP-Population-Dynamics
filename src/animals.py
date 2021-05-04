@@ -30,6 +30,8 @@ class Animal(Entity):
 		self.direction_randomness = 0.4
 		self.max_age = minimum_int(gauss(mean_max_age, std*3))
 
+		self.nutritional_value *= self.max_hunger
+
 		# For keeping track of stuff
 		self.steps_taken = 0
 		self.hunger = self.max_hunger / 2

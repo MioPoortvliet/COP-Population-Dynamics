@@ -6,7 +6,7 @@ import numpy as np
 fox_density = 0.005
 rabbit_density = 0.11
 carrot_density = 0.2
-map_size = 50
+map_size = 25
 settings = {
     "map_size": map_size,
     "animals": ["fox", "rabbit"],
@@ -20,19 +20,19 @@ settings = {
 }
 
 fox_inits = {
-    "mean_speed": 3,
+    "mean_speed": 1,
     "mean_reproductive_drive": 10,
     "mean_sight_radius": 5,
-    "mean_max_hunger": 60,
-    "mean_max_age": 100
+    "mean_max_hunger": 100,
+    "mean_max_age": 300
 }
 rabbit_inits = {
-    "mean_speed": 3,
+    "mean_speed": 1,
     "mean_reproductive_drive": 5,
     "mean_sight_radius": 3,
     "mean_max_hunger": 40,
     "mean_max_age": 100,
-    "nutritional_value": 20
+    "nutritional_value": 1 # Multiplied by max_hunger!
 }
 
 if __name__ == "__main__":
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     #map_graph(ae.printable_map())
     # We need pathfinding to food because the rabbits don't eat
 
-    stats, genes = ae.run_cycles(maxcycles=500)
+    stats, genes = ae.run_cycles(maxcycles=1000)
     #map_graph(ae.printable_map())
     #for i in range(7):
     #    stats_, genes_ = ae.run_cycles(maxcycles=10)

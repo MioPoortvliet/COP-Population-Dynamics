@@ -130,15 +130,17 @@ class AnimalEvolution():
 				self.step_forward()
 				self.delete_animals()
 
-	def run_cycles(self, maxcycles=10):
+	def run_cycles(self, maxcycles=10, printskip=15):
 		self.stats = np.zeros(shape=(maxcycles + 1, len(self.animal_objects) + len(self.food_objects)))
 		self.animal_stats = np.zeros((maxcycles+1, len(self.animal_objects), 8, 2))
 		self.write_stats(0)
 
 		# map_graph(self.printable_map())
 		for cycle in range(maxcycles):
-			print(cycle)
-			if np.any(self.stats[cycle - 1, 1::] <= 1) and cycle != 0:
+			# cycle is the previous cycle, we started at 0
+			if cycle % printskip == 0:
+				print(cycle)
+			if np.any(self.stats[cycle, 1::] <= 1):
 				if self.settings["stop_at_zero"]:
 					# There are not enough animals alive
 					print("Premature ending")
@@ -146,15 +148,15 @@ class AnimalEvolution():
 
 				else:
 					for i, animal_key in enumerate(self.animal_objects.keys()):
-						if self.stats[cycle-1, 1+i] <= 1:
+						if self.stats[cycle, 1+i] <= 1 and self.settings[animal_key] > self.stats[cycle, 1+i]:
 							print(f"{animal_key} is spawned!")
 							animal = self.animal_objects[animal_key]["object"](
 								**self.animal_objects[animal_key]["init"],
 								std=self.settings["animal_std"]
 							)
 							zero_idx = np.argwhere(self.animal_map == 0)
-							position = zero_idx[randint(0, zero_idx.shape[0]),::]
-							self.position_entities([animal], positions=[position])
+							position = zero_idx[randint(0, zero_idx.shape[0]-1),::]
+							self.position_entities([animal], positions=[tuple(position)])
 			self.cycle()
 			self.reset_animals()
 			self.spawn_food()
@@ -268,11 +270,16 @@ class AnimalEvolution():
 				if self.animal_map[coords] == 0:
 					# print("Baby is born!", mom.position, dad.position)
 
+					for animal_name in self.animal_objects.keys():
+						if isinstance(self.animal_objects[animal_name]["object"], animal):
+							break
+					
+
 					newanimal = animal(
 						mean_speed=(mom.speed + dad.speed) / 2,
 						mean_reproductive_drive=(mom.reproductive_drive + dad.reproductive_drive) / 2,
 						mean_sight_radius=(mom.sight_radius + dad.sight_radius) / 2,
-						mean_max_hunger=(mom.max_hunger + dad.max_hunger) / 2,
+						mean_max_hunger=self.animal_objects[animal_name]["init"]["mean_max_hunger"],
 						mean_max_age=(mom.max_age + dad.max_age) / 2,
 						std=self.settings["animal_std"],
 						nutritional_value=(mom.nutritional_value+dad.nutritional_value)/2
