@@ -17,7 +17,7 @@ settings = {
     "rabbit": int(rabbit_density * map_size ** 2),
     "carrot": int(carrot_density * map_size ** 2),
     "food_spawn_chance": {"carrot": 0.05},
-    "stop_at_zero": False,
+    "stop_at_zero": True,
     "animal_std": 0,
     "avoid_extinction": False
 }
@@ -71,5 +71,6 @@ def run_sim(animal_std=settings["animal_std"], id="no_id", maxcycles=1000):
 
 
 if __name__ == "__main__":
-    for std in np.linspace(0, 2, 10):
-        run_sim(std, maxcycles=50000, id="semiSeriousRun")
+    run_sim(0, maxcycles=100, id="test")
+    #for std in np.linspace(0, 2, 10):
+    #    run_sim(std, maxcycles=50000, id="semiSeriousRun")
