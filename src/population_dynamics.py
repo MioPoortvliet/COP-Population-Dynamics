@@ -1,9 +1,10 @@
 import numpy as np
-from random import sample, gauss, choice, randint
+from random import sample, gauss, randint, choice
 from src.visualization import map_graph
 from src.animals import Fox, Rabbit, Carrot, Animal
 from itertools import product
 from src.utils import nearest_nonzero_idx, nonzero_idx, process_statistics
+from src.utils_ising_model import choice as fastchoice
 
 """----NOTES----
 It seems like it is a problem that carrots take up a tile
@@ -148,7 +149,7 @@ class AnimalEvolution():
 
 				else:
 					for i, animal_key in enumerate(self.animal_objects.keys()):
-						if self.stats[cycle, 1+i] <= 1 and self.settings[animal_key] > self.stats[cycle, 1+i]:
+						if self.stats[cycle, 1+i] <= 1 and self.settings[animal_key] > self.stats[cycle, 1+i] and self.settings["avoid_extinction"]:
 							print(f"{animal_key} is spawned!")
 							animal = self.animal_objects[animal_key]["object"](
 								**self.animal_objects[animal_key]["init"],
@@ -204,11 +205,7 @@ class AnimalEvolution():
 		for food_id in self.food_objects.keys():
 			zero_idx = np.argwhere(self.food_map == 0)
 			for coords in zero_idx:
-				if np.random.choice(
-						[False, True],
-						p=[1 - self.settings["food_spawn_chance"][food_id],
-						   self.settings["food_spawn_chance"][food_id]]
-				):
+				if fastchoice(self.settings["food_spawn_chance"][food_id]):
 					coords = tuple(coords)
 
 					# print(self.foods[-1], self.map[coords])

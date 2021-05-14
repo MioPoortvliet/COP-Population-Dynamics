@@ -6,7 +6,7 @@ import numpy as np
 fox_density = 0.005
 rabbit_density = 0.11
 carrot_density = 0.2
-map_size = 25
+map_size = 50
 settings = {
     "map_size": map_size,
     "animals": ["fox", "rabbit"],
@@ -16,7 +16,8 @@ settings = {
     "carrot": int(carrot_density * map_size ** 2),
     "food_spawn_chance": {"carrot": 0.05},
     "stop_at_zero": False,
-    "animal_std": 3
+    "animal_std": 0,
+    "avoid_extinction": True
 }
 
 fox_inits = {

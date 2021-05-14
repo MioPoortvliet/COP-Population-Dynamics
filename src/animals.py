@@ -1,5 +1,5 @@
 import numpy as np
-from random import choice, gauss, randint
+from random import gauss, randint
 from src.utils import minimum_int, direction_from_difference, nonzero_idx
 from numba import njit
 
