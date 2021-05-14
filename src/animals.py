@@ -176,7 +176,7 @@ class Carrot(Entity):
 
 #@njit
 def pathfinding_check(animal_position, animal_sight_radius, entity_map):
-	other_idx = nonzero_idx(entity_map.astype(np.bool_), *animal_position)
+	other_idx = nonzero_idx(entity_map, *animal_position)
 	if other_idx is None:
 		return 0, None
 

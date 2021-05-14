@@ -1,6 +1,8 @@
 from src.animals import Fox, Rabbit, Carrot
 from src.population_dynamics import AnimalEvolution
 from src.visualization import map_graph, population_stats_plot, animal_stats_plot
+from src.IO_utils import to_file, slugify, ensure_dir, to_json
+from datetime import datetime
 import numpy as np
 
 fox_density = 0.005
@@ -17,7 +19,7 @@ settings = {
     "food_spawn_chance": {"carrot": 0.05},
     "stop_at_zero": False,
     "animal_std": 0,
-    "avoid_extinction": True
+    "avoid_extinction": False
 }
 
 fox_inits = {
@@ -37,7 +39,13 @@ rabbit_inits = {
 }
 
 if __name__ == "__main__":
-
+    # Set up file structure
+    fpath = f"generated/{slugify(datetime.now().isoformat())}/"
+    ensure_dir(fpath)
+    # Write simulation parameters to file
+    to_json(fpath+"settings.json", settings)
+    to_json(fpath+"fox_inits.json", fox_inits)
+    to_json(fpath+"rabbit_inits.json", rabbit_inits)
 
     animal_objects = {"fox": {"object":Fox, "init":fox_inits}, "rabbit": {"object":Rabbit, "init":rabbit_inits}}
     food_objects = {"carrot": Carrot}
@@ -46,16 +54,11 @@ if __name__ == "__main__":
     #map_graph(ae.printable_map())
     # We need pathfinding to food because the rabbits don't eat
 
-    stats, genes = ae.run_cycles(maxcycles=1000)
-    #map_graph(ae.printable_map())
-    #for i in range(7):
-    #    stats_, genes_ = ae.run_cycles(maxcycles=10)
-    #    stats = np.append(stats,stats_, axis=0)
-    #    genes = np.append(genes,genes_, axis=0)
-        #map_graph(ae.printable_map())
+    stats, genes = ae.run_cycles(maxcycles=10000)
 
-    #stats = np.append(stats,, axis=0)
-    #map_graph(ae.printable_map())
+    # Save simulated data
+    to_file(fpath+"stats.npy", stats)
+    to_file(fpath+"genes.npy", genes)
 
     population_stats_plot(stats, food_objects, animal_objects)
 
