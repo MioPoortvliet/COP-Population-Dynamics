@@ -172,7 +172,7 @@ class Carrot(Entity):
 	def __init__(self, *args, **kwargs):
 		self.identifier = 1
 		super(Carrot, self).__init__()
-		self.nutritional_value = 15
+		self.nutritional_value = 30
 
 #@njit
 def pathfinding_check(animal_position, animal_sight_radius, entity_map):

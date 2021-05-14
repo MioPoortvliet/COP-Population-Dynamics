@@ -56,7 +56,7 @@ if __name__ == "__main__":
     # population_stats_plot(stats, food_objects, animal_objects)
     # plt.show()
     
-    stats = np.load("data\\2021-05-14t140456019686\stats.npy")
+    stats = np.load("generated/2021-05-14t164643174477-test-std0/stats.npy")
     plt.figure()
     plt.plot(stats[::,0])
     plt.plot(stats[::,1])

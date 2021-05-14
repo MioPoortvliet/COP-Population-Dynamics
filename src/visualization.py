@@ -25,11 +25,12 @@ def population_stats_plot(stats, food_objects, animal_objects):
 	ax2.set_ylabel("Food units", color="r")
 	ax2.tick_params(axis="y", labelcolor="r")
 
+	color = ["red", "grey"]
 	for i in range(len(animal_names)):
-		ax1.plot(stats[::,i+len(food_names)], label=animal_names[i])
+		ax1.plot(stats[::,i+len(food_names)], label=animal_names[i], color=color[i])
 
 	for i in range(len(food_names)):
-		ax2.plot(stats[::,i], label=food_names[i], color='r')
+		ax2.plot(stats[::,i], label=food_names[i], color='orange')
 
 	ax1.set_ylim(0)
 	ax2.set_ylim(0)
