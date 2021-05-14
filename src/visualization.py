@@ -16,7 +16,7 @@ def map_graph(simulation_map):
 def population_stats_plot(stats, food_objects, animal_objects):
 	food_names = list(food_objects.keys())
 	animal_names = list(animal_objects.keys())
-
+	plt.figure()
 	fig, ax1 = plt.subplots()
 	ax1.set_ylabel("Animal units")
 
@@ -39,6 +39,7 @@ def population_stats_plot(stats, food_objects, animal_objects):
 
 
 def animal_stats_plot(stats, title="", labels=(0, 8)):
+	plt.figure()
 	x = np.arange(stats.shape[0])
 	stat_labels = [		"speed",
 						"reproductive_drive",
@@ -63,12 +64,12 @@ def animal_stats_plot(stats, title="", labels=(0, 8)):
 	plt.show()
 
 def stats_plot(stats, food_objects, animal_objects):
-    plt.figure()
-    names = list(food_objects.keys())+list(animal_objects.keys())
-    for i in range(stats.shape[1]):
-        plt.plot(stats[::,i], label=names[i])
-    plt.legend()
-    plt.show()
+	plt.figure()
+	names = list(food_objects.keys())+list(animal_objects.keys())
+	for i in range(stats.shape[1]):
+		plt.plot(stats[::,i], label=names[i])
+	plt.legend()
+	plt.show()
 
 class MapPlot:
 	def __init__(self, simulation_map, animal_evolution):

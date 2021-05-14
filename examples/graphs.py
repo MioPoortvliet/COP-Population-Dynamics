@@ -38,9 +38,11 @@ rabbit_inits = {
     "nutritional_value": 1 # Multiplied by max_hunger!
 }
 
-if __name__ == "__main__":
+
+def run_sim(animal_std=settings["animal_std"], id="no_id", maxcycles=1000):
+    settings["animal_std"] = animal_std
     # Set up file structure
-    fpath = f"generated/{slugify(datetime.now().isoformat())}/"
+    fpath = f"generated/{slugify(datetime.now().isoformat())}-{id}-std{animal_std}/"
     ensure_dir(fpath)
     # Write simulation parameters to file
     to_json(fpath+"settings.json", settings)
@@ -54,14 +56,20 @@ if __name__ == "__main__":
     #map_graph(ae.printable_map())
     # We need pathfinding to food because the rabbits don't eat
 
-    stats, genes = ae.run_cycles(maxcycles=10000)
+    stats, genes = ae.run_cycles(maxcycles=maxcycles)
 
     # Save simulated data
-    to_file(fpath+"stats.npy", stats)
-    to_file(fpath+"genes.npy", genes)
+    to_file(fpath+"stats", stats)
+    to_file(fpath+"genes", genes)
 
     population_stats_plot(stats, food_objects, animal_objects)
 
     for i, animal in enumerate(animal_objects.keys()):
         animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(0, 3))
         animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(3, 8))
+
+
+
+if __name__ == "__main__":
+    for std in np.linspace(0, 2, 10):
+        run_sim(std, maxcycles=50000, id="semiSeriousRun")
