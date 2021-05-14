@@ -14,8 +14,8 @@ class MapAnimation:
         
         self.figure = plt.figure()
         self.gs = gridspec.GridSpec(3,20)
-        n=-12
-        self.ax = self.figure.add_subplot(self.gs[:,n:-1])
+        n=5
+        self.ax = self.figure.add_subplot(self.gs[:,2*n+1:-1])
         self.ax_cb = self.figure.add_subplot(self.gs[:,-1])
         colors= ["green","orange","white","white","red","red"]
         cmap = LinearSegmentedColormap.from_list("cmap_name", colors, N=6)
@@ -25,11 +25,13 @@ class MapAnimation:
         self.cbar.set_ticks(np.array([1, 2, 3 , 4, 5])+.5)
         self.cbar.set_ticklabels(["Carrot", "Rabbit", "Rabbit+Carrot", "Fox", "Fox+Carrot"])
         
-        self.ax_population = self.figure.add_subplot(self.gs[0,:n-1])
+        self.ax_population = self.figure.add_subplot(self.gs[0,:2*n])
         self.ax_population.set_prop_cycle(color=['orange', 'red', 'grey'])
         self.lines_population = [self.ax_population.plot(self.stats[::,i]) for i in range(self.stats.shape[1])]
-        self.ax_rabbit     = self.figure.add_subplot(self.gs[1,:n-1])
-        self.ax_fox        = self.figure.add_subplot(self.gs[2,:n-1])
+        self.ax_rabbit_1     = self.figure.add_subplot(self.gs[1,:n])
+        self.ax_fox_1        = self.figure.add_subplot(self.gs[1,n:2*n])
+        self.ax_rabbit_2     = self.figure.add_subplot(self.gs[2,:n])
+        self.ax_fox_1        = self.figure.add_subplot(self.gs[2,n:2*n])
         
     def update(self,i):
         stats, genes = self.sim.run_cycles(maxcycles=self.frameskip)

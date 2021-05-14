@@ -43,7 +43,7 @@ def run_analysis(stats):
     ft_freqs = np.fft.rfftfreq(stats.shape[0],1)
     print(ft_stats)
     plt.figure()
-    plt.plot(ft_freqs[1:250],np.abs(ft_stats[1:250]))
+    plt.plot(ft_freqs[1:100],np.abs(ft_stats[1:100]))
     plt.show()
     
 if __name__ == "__main__":
