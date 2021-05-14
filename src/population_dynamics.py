@@ -268,7 +268,7 @@ class AnimalEvolution():
 					# print("Baby is born!", mom.position, dad.position)
 
 					for animal_name in self.animal_objects.keys():
-						if isinstance(self.animal_objects[animal_name]["object"], animal):
+						if self.animal_objects[animal_name]["object"].__name__ == animal.__name__:
 							break
 					
 
