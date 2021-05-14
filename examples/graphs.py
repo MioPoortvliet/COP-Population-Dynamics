@@ -71,5 +71,5 @@ def run_sim(animal_std=settings["animal_std"], id="no_id", maxcycles=1000):
 
 
 if __name__ == "__main__":
-    for std in np.linspace(0, 2, 10):
-        run_sim(std, maxcycles=50000, id="semiSeriousRun")
+    std=.3
+    run_sim(std, maxcycles=100, id="semiSeriousRun")

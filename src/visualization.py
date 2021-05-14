@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
+from matplotlib.colors import LinearSegmentedColormap
 
 def map_graph(simulation_map):
 	figure, ax = plt.subplots(figsize=(8,6))
