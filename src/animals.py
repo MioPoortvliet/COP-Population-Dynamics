@@ -184,7 +184,7 @@ def pathfinding_check(animal_position, animal_sight_radius, entity_map):
     
     # differences = np.sum((other_idx - np.array(animal_position))**2, axis=1) <= animal_sight_radius**2
     L = len(entity_map)
-    diff = (other_idx - np.array(animal_position) + (L/2.) )%L - (L/2.) 
+    diff = np.mod(other_idx - np.array(animal_position) + (L/2.), L ) - (L/2.) 
     differences = np.sum( diff**2, axis=1) <= animal_sight_radius**2
     
     # Are there entities within range?
@@ -192,7 +192,7 @@ def pathfinding_check(animal_position, animal_sight_radius, entity_map):
     if n > 0:
         if n < other_idx.shape[0]:
             # Only sort the first n
-            nearest_sorted = other_idx[np.argpartition(((other_idx - [animal_position[0], animal_position[1]]) ** 2).sum(1), kth=n)][:n]
+            nearest_sorted = other_idx[np.argpartition((diff ** 2).sum(1), kth=n)][:n]
         elif n > 1:
             # Sort all n
             nearest_sorted = np.sort(other_idx)
