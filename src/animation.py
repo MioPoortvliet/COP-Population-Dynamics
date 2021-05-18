@@ -12,11 +12,22 @@ class MapAnimation:
         self.stats, self.genes = self.sim.run_cycles(maxcycles=1)
         self.frameskip= frameskip
         
+        self.labels = (0, 8)
+        self.genes_labels = ["speed",
+    						"reproductive_drive",
+    						"sight_radius",
+    						"max_hunger",
+    						"max_age",
+    						"age",
+    						"hunger",
+    						"libido"
+		]
+        
         self.figure = plt.figure()
-        self.gs = gridspec.GridSpec(3,20)
+        self.gs = gridspec.GridSpec(6,20)
         n=5
-        self.ax = self.figure.add_subplot(self.gs[:,2*n+1:-1])
-        self.ax_cb = self.figure.add_subplot(self.gs[:,-1])
+        self.ax = self.figure.add_subplot(self.gs[:-2,2*n+1:-1])
+        self.ax_cb = self.figure.add_subplot(self.gs[:-2,-1])
         colors= ["green","orange","white","white","red","red"]
         cmap = LinearSegmentedColormap.from_list("cmap_name", colors, N=6)
         norm = mpl.colors.Normalize(vmin=0, vmax=6)
@@ -25,20 +36,40 @@ class MapAnimation:
         self.cbar.set_ticks(np.array([1, 2, 3 , 4, 5])+.5)
         self.cbar.set_ticklabels(["Carrot", "Rabbit", "Rabbit+Carrot", "Fox", "Fox+Carrot"])
         
-        self.ax_population = self.figure.add_subplot(self.gs[0,:2*n])
+        # make all axes
+        self.ax_population = self.figure.add_subplot(self.gs[-2:,2*n+1:-1])
         self.ax_population.set_prop_cycle(color=['orange', 'red', 'grey'])
         self.lines_population = [self.ax_population.plot(self.stats[::,i]) for i in range(self.stats.shape[1])]
-        self.ax_rabbit_1     = self.figure.add_subplot(self.gs[1,:n])
-        self.ax_fox_1        = self.figure.add_subplot(self.gs[1,n:2*n])
-        self.ax_rabbit_2     = self.figure.add_subplot(self.gs[2,:n])
-        self.ax_fox_1        = self.figure.add_subplot(self.gs[2,n:2*n])
+        
+        self.ax_rabbit_1     = self.figure.add_subplot(self.gs[1:3,0:n])
+        self.lines_rabbit_1   = [self.ax_rabbit_1.plot(self.genes[::, 1, i, 0], label=label) for i, label in enumerate(self.genes_labels[0:3])]
+        
+        self.ax_fox_1        = self.figure.add_subplot(self.gs[1:3,n:2*n])
+        self.lines_fox_1   = [self.ax_fox_1.plot(self.genes[::, 0, i, 0], label=label) for i, label in enumerate(self.genes_labels[0:3])]
+        
+        self.ax_rabbit_2     = self.figure.add_subplot(self.gs[4:,0:n])
+        self.lines_rabbit_2   = [self.ax_rabbit_2.plot(self.genes[::, 1, i+3, 0], label=label) for i, label in enumerate(self.genes_labels[3:8])]
+        
+        self.ax_fox_2        = self.figure.add_subplot(self.gs[4:,n:2*n])
+        self.lines_fox_2   = [self.ax_fox_2.plot(self.genes[::, 0, i+3, 0], label=label) for i, label in enumerate(self.genes_labels[3:8])]
         
     def update(self,i):
         stats, genes = self.sim.run_cycles(maxcycles=self.frameskip)
         self.stats = np.append(self.stats, stats, axis=0)
         self.genes = np.append(self.genes, genes, axis=0)
         self.map_image.set_data(self.sim.printable_map())
+        [ax.clear() for ax in [self.ax_population, self.ax_rabbit_1, self.ax_fox_1, self.ax_rabbit_2, self.ax_fox_2 ]]
+        
+        self.ax_population.set_prop_cycle(color=['orange', 'red', 'grey'])
         self.lines_population = [self.ax_population.plot(self.stats[::,i]) for i in range(self.stats.shape[1])]
+        
+        self.lines_rabbit_1   = [self.ax_rabbit_1.plot(self.genes[::, 1, i+self.labels[0], 0], label=label) for i, label in enumerate(self.genes_labels[0:3])]
+        self.lines_fox_1   = [self.ax_fox_1.plot(self.genes[::, 0, i, 0], label=label) for i, label in enumerate(self.genes_labels[0:3])]
+        self.lines_rabbit_2   = [self.ax_rabbit_2.plot(self.genes[::, 1, i+3, 0], label=label) for i, label in enumerate(self.genes_labels[3:8])]
+        self.lines_fox_2   = [self.ax_fox_2.plot(self.genes[::, 0, i+3, 0], label=label) for i, label in enumerate(self.genes_labels[3:8])]
+        self.ax_fox_1.legend(bbox_to_anchor=(.7, 1,.3,.4))
+        self.ax_fox_2.legend(bbox_to_anchor=(.5, 1,.3,.4))
+        
         return self.map_image, self.lines_population
         
     def run(self):
