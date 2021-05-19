@@ -69,15 +69,15 @@ class Fox(Animal):
             # Yes, interact possibly?
             for other_idx in sorted_animals_idx:
                 other = animal_map[tuple(other_idx)]
+                L = animal_map.shape[0]
 
                 if isinstance(other, Rabbit) and self.food_check():
-                    difference = other_idx - np.array(self.position)
+                    difference = (other_idx - np.array(self.position) + L/2) % L - L/2
                     # yes, yummy
                     return direction_from_difference(difference)
 
                 elif isinstance(other, Fox) and not self.food_check() and self.libido_check():
-                    difference = other_idx - np.array(self.position)
-                    #print("let's fuck", animal.position, other.position)
+                    difference = (other_idx - np.array(self.position) + L/2) % L - L/2
                     return direction_from_difference(difference)
 
         # No, move randomly
@@ -110,6 +110,7 @@ class Rabbit(Animal):
         animals_in_sight, sorted_animals_idx = pathfinding_check(self.position, self.sight_radius, animal_map.astype(np.bool_))
         foods_in_sight, sorted_foods_idx = pathfinding_check(self.position, self.sight_radius, food_map.astype(np.bool_))
 
+        L = animal_map.shape[0]
         # Check if there are entities within sight radius
         if animals_in_sight > 0:
             # Yes, interact possibly?
@@ -117,12 +118,12 @@ class Rabbit(Animal):
                 other = animal_map[tuple(other_idx)]
 
                 if isinstance(other, Fox):
-                    reverse_difference = np.array(self.position)- other_idx
+                    reverse_difference = (np.array(self.position) - other_idx + L/2) % L - L/2
                     # Fuck, run
                     return direction_from_difference(reverse_difference)
 
                 elif isinstance(other, Rabbit) and not self.food_check() and self.libido_check():
-                    difference = other_idx - np.array(self.position)
+                    difference = (other_idx - np.array(self.position) + L/2) % L - L/2
                     #print("let's fuck", animal.position, other.position)
                     return direction_from_difference(difference)
 
@@ -133,7 +134,7 @@ class Rabbit(Animal):
             for other_idx in sorted_foods_idx:
                 other = food_map[tuple(other_idx)]
                 if isinstance(other, Carrot):
-                    difference = other_idx - np.array(self.position)
+                    difference = (other_idx - np.array(self.position) + L/2) % L - L/2
                     #print("i'm hungry", animal.position, other.position)
                     return direction_from_difference(difference)
 

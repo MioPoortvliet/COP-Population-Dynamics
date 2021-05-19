@@ -39,7 +39,7 @@ settings = {
 fox_inits = {
     "mean_speed": 2,
     "mean_reproductive_drive": 100,
-    "mean_sight_radius": 5,
+    "mean_sight_radius": 10,
     "mean_max_hunger": 1000,
     "mean_max_age": 10000
 }
@@ -49,7 +49,7 @@ rabbit_inits = {
     "mean_sight_radius": 10,
     "mean_max_hunger": 400,
     "mean_max_age": 4000,
-    "nutritional_value": 1 # Multiplied by max_hunger!
+    "nutritional_value": 50
 }
 
 
