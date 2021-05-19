@@ -251,7 +251,7 @@ class AnimalEvolution():
 			if cycle % printskip == 0: # Print what cycle we are calculating
 				print(cycle)
 
-			if np.any(self.population[cycle-1, 1::] < 2) and cycle != 0: # check if there are less than two animals of any kind.
+			if np.any(self.population[cycle-1, 1::] <= 2) and cycle != 0: # check if there are less than two animals of any kind.
 				# break simulation if there is no future
 				if self.settings["stop_at_zero"]:
 					# There are not enough animals alive
@@ -319,7 +319,7 @@ class AnimalEvolution():
 					])
 
 					# i is position of last food stat, not a bug but yes sloppy programming.
-					self.population[cycle, i + 1 + j] += 1
+					self.population[cycle, len(self.food_objects) + j] += 1
 					animal_genes[k, :-1:] = animal_properties
 					animal_genes[k, -1] = j
 
