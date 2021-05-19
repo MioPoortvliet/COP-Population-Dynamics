@@ -2,6 +2,8 @@ import numpy as np
 from numba import njit
 import numba
 
+nn_array = np.concatenate([np.eye(2, dtype=int), -np.eye(2, dtype=int)])
+
 def minimum_int(num, min_num=1):
 	num = int(num)
 	if num < min_num:

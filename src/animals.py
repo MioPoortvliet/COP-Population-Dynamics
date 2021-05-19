@@ -30,7 +30,7 @@ class Animal(Entity):
         self.direction_randomness = .4
         self.max_age = minimum_int(gauss(mean_max_age, std*3))
 
-        self.nutritional_value *= self.max_hunger
+        #self.nutritional_value *= self.max_hunger
 
         # For keeping track of stuff
         self.steps_taken = 0
@@ -86,23 +86,18 @@ class Fox(Animal):
 
     def interact(self, neighbour_animal):
         # animal is fox
-        # next to rabbit
-        if isinstance(neighbour_animal, Rabbit) and self.food_check():
-            # print("Rabit gets eaten")
-            neighbour_animal.gets_eaten()
-            self.eat(neighbour_animal)
-            return neighbour_animal, False # Deleted animal, Make baby?
         # next to Fox
-        elif isinstance(neighbour_animal, Fox) and (not self.food_check()) and (not neighbour_animal.food_check()) and self.libido_check():
-            return None, True # Deleted animal, Make baby?
+        if isinstance(neighbour_animal, Fox) and (not self.food_check()) and (not neighbour_animal.food_check()) and self.libido_check():
+            return True # Make baby?
 
         else:
-            return None, False # Deleted animal, Make baby?
+            return False # Make baby?
 
-    def food_interaction(self, food_map):
-        return False
-
-
+    def eat_possible(self, other):
+        if isinstance(other, Rabbit):
+            return True
+        else:
+            return False
 
 class Rabbit(Animal):
     def __init__(self, *args, **kwargs):
@@ -148,25 +143,15 @@ class Rabbit(Animal):
 
     def interact(self, neighbour_animal):
         # animal is rabbit
-        # next to fox
-        if isinstance(neighbour_animal, Fox):
-            # print("Rabit gets eaten")
-            self.gets_eaten()
-            neighbour_animal.eat(self)
-            return self, False # Deleted animal, Make baby?
         # next to rabbit
-        elif isinstance(neighbour_animal, Rabbit) and (not self.food_check()) and (not neighbour_animal.food_check()) and self.libido_check():
-            return None, True # Deleted animal, Make baby?
+        if isinstance(neighbour_animal, Rabbit) and (not self.food_check()) and (not neighbour_animal.food_check()) and self.libido_check():
+            return True # Make baby?
         # next to carrot
         else:
-            return None, False # Deleted animal, Make baby?
+            return False # Make baby?
 
-    def food_interaction(self, food_map):
-        if not food_map[self.position] == 0:
-            self.eat(food_map[self.position])
-            return True
-        else:
-            return False
+    def eat_possible(self, other):
+        return False
 
 class Carrot(Entity):
     def __init__(self, *args, **kwargs):

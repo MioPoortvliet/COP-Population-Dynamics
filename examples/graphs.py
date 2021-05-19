@@ -1,14 +1,14 @@
 from src.animals import Fox, Rabbit, Carrot
-from src.population_dynamics import AnimalEvolution
+from src.population_dynamics_attempt2 import AnimalEvolution
 from src.visualization import map_graph, population_stats_plot, animal_stats_plot
 from src.IO_utils import to_file, slugify, ensure_dir, to_json
 from datetime import datetime
 import numpy as np
 
-fox_density = 0.0015
+fox_density = 0.#001
 rabbit_density = 0.0075
 carrot_density = 0.15
-map_size = 200
+map_size = 100
 settings = {
     "map_size": map_size,
     "animals": ["fox", "rabbit"],
@@ -16,10 +16,10 @@ settings = {
     "fox": int(fox_density * map_size ** 2),
     "rabbit": int(rabbit_density * map_size ** 2),
     "carrot": int(carrot_density * map_size ** 2),
-    "food_spawn_chance": {"carrot": 0.0001},
-    "stop_at_zero": True,
+    "food_spawn_chance": {"carrot": 0.0004},
+    "stop_at_zero": False,
     "animal_std": 0,
-    "avoid_extinction": False
+    "avoid_extinction": True
 }
 
 # map_size = 50
@@ -85,6 +85,6 @@ def run_sim(animal_std=settings["animal_std"], id="no_id", maxcycles=1000):
 
 
 if __name__ == "__main__":
-    run_sim(0, maxcycles=1000, id="test")
+    run_sim(0, maxcycles=100, id="test")
     #for std in np.linspace(0, 2, 10):
     #    run_sim(std, maxcycles=50000, id="semiSeriousRun")
