@@ -27,7 +27,7 @@ class Animal(Entity):
         self.sight_radius = minimum_int(gauss(mean_sight_radius, std))
         self.max_hunger = minimum_int(gauss(mean_max_hunger, std*3))
         self.last_direction = randint(0, 3)
-        self.direction_randomness = .4
+        self.direction_randomness = 0.4
         self.max_age = minimum_int(gauss(mean_max_age, std*3))
 
         #self.nutritional_value *= self.max_hunger
@@ -105,8 +105,6 @@ class Rabbit(Animal):
         super(Rabbit, self).__init__(*args, **kwargs)
 
     def pathfinding(self, animal_map, food_map):
-        #animals_in_sight, sorted_animals_idx = pathfinding_check(self, animal_map)
-        #foods_in_sight, sorted_foods_idx = pathfinding_check(self, food_map)
         animals_in_sight, sorted_animals_idx = pathfinding_check(self.position, self.sight_radius, animal_map.astype(np.bool_))
         foods_in_sight, sorted_foods_idx = pathfinding_check(self.position, self.sight_radius, food_map.astype(np.bool_))
 
@@ -119,28 +117,26 @@ class Rabbit(Animal):
 
                 if isinstance(other, Fox):
                     reverse_difference = (np.array(self.position) - other_idx + L/2) % L - L/2
+                    #print(f"{self} is a moving away from a fox! {self.position}, {other.position}")
                     # Fuck, run
                     return direction_from_difference(reverse_difference)
 
                 elif isinstance(other, Rabbit) and not self.food_check() and self.libido_check():
+                    #print(f"{self} is a moving to a rabbit! {self.position}, {other.position}")
                     difference = (other_idx - np.array(self.position) + L/2) % L - L/2
-                    #print("let's fuck", animal.position, other.position)
                     return direction_from_difference(difference)
 
-
-            # Nothing in priorities?
-            #return round(gauss(self.last_direction, self.direction_randomness)) % 4
         if foods_in_sight > 0 and self.food_check():
             for other_idx in sorted_foods_idx:
                 other = food_map[tuple(other_idx)]
                 if isinstance(other, Carrot):
+                    #print(f"{self} is a moving to a carrot! {self.position}, {other.position}")
                     difference = (other_idx - np.array(self.position) + L/2) % L - L/2
-                    #print("i'm hungry", animal.position, other.position)
                     return direction_from_difference(difference)
 
         # No, move randomly
+        #print(f"{self} is a random mover! {self.position}")
         return round(gauss(self.last_direction, self.direction_randomness)) % 4
-
 
     def interact(self, neighbour_animal):
         # animal is rabbit
@@ -179,16 +175,10 @@ def pathfinding_check(animal_position, animal_sight_radius, entity_map):
     # Are there entities within range?
     n = np.sum(differences)
     if n > 0:
-        if n < other_idx.shape[0]:
-            # Only sort the first n
-            nearest_sorted = other_idx[np.argpartition((diff ** 2).sum(1), kth=n)][:n]
-        elif n > 1:
-            # Sort all n
-            nearest_sorted = np.sort(other_idx)
-        else:
-            nearest_sorted = other_idx
+        nearest_sorted = other_idx[np.argsort((diff ** 2).sum(1))][:n]
 
         return n, nearest_sorted
+
     else:
         return 0, None
 
