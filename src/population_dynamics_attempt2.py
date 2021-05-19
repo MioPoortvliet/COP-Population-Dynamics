@@ -88,7 +88,7 @@ class AnimalEvolution():
 		animal.hunger += 1
 		animal.steps_taken += 1
 
-	def move_validity(self, animal, new_pos):
+	def move_validity(self, new_pos):
 		if self.animal_map[new_pos] == 0:
 			return True
 		else:
@@ -119,7 +119,7 @@ class AnimalEvolution():
 				self.delete_entity(self.animal_map[new_pos], self.animal_map)
 			# Now the move will be valid!
 
-			if self.move_validity(animal, new_pos):
+			if self.move_validity(new_pos):
 				self.move_animal(animal, new_pos, direction)
 				# break from the direction loop
 				break
