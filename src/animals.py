@@ -7,13 +7,8 @@ from numba import njit
 class Entity():
     def __init__(self, nutritional_value=15):
         self.position = (None, None)
-        #self.eaten = False # Flag variable
+        self.exists = True # Flag variable to combat copies of array still existing
         self.nutritional_value = nutritional_value
-
-    #def gets_eaten(self):
-        #print("got_eaten")
-        #self.eaten = True
-
 
 class Animal(Entity):
 

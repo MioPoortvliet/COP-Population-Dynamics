@@ -115,12 +115,17 @@ class AnimalEvolution():
 
 			# Can we eat a juicy rabbit?
 			if animal.eat_possible(self.animal_map[new_pos]):
+				#print(f"{animal} is eating {self.animal_map[new_pos]}")
 				animal.eat(self.animal_map[new_pos])
+				#print(f"{animal} just ate")
+				#print(f"removing {self.animal_map[new_pos]}")
 				self.delete_entity(self.animal_map[new_pos], self.animal_map)
 			# Now the move will be valid!
 
 			if self.move_validity(new_pos):
+				#print(f"moving this guy: {animal}")
 				self.move_animal(animal, new_pos, direction)
+				#print(self.animal_map[new_pos])
 				# break from the direction loop
 				break
 
@@ -190,27 +195,28 @@ class AnimalEvolution():
 		exhausted_animals = 0
 
 		for animal in animals:
-			# Animal is still alive and may move
-			if animal.steps_taken < animal.speed:
-				self.attempt_to_move_animal(animal)
+			if animal.exists:
+				# Animal is still alive and may move
+				if animal.steps_taken < animal.speed:
+					self.attempt_to_move_animal(animal)
 
-				# See if there is interaction with neighbours
-				self.adjacent_interactions(animal)
+					# See if there is interaction with neighbours
+					self.adjacent_interactions(animal)
 
-				# not elif, animal can move and eat in the same step
-				if not self.food_map[animal.position] == 0:
-					if animal.eat_possible(self.food_map[animal.position]):
-						animal.eat(self.food_map[animal.position])
-						self.delete_entity(self.food_map[animal.position], self.food_map)
+					# not elif, animal can move and eat in the same step
+					if not self.food_map[animal.position] == 0:
+						if animal.eat_possible(self.food_map[animal.position]):
+							animal.eat(self.food_map[animal.position])
+							self.delete_entity(self.food_map[animal.position], self.food_map)
 
-				if animal.hunger >= animal.max_hunger:
-					self.delete_entity(animal, self.animal_map)
-					exhausted_animals-=1
+					if animal.hunger >= animal.max_hunger:
+						self.delete_entity(animal, self.animal_map)
+						exhausted_animals-=1
 
 
-			else:
-				#animal is out of steps
-				exhausted_animals+=1
+				else:
+					#animal is out of steps
+					exhausted_animals+=1
 
 		return len(animals) == exhausted_animals
 
@@ -278,7 +284,8 @@ class AnimalEvolution():
 
 	def delete_entity(self, entity, map):
 		map[entity.position] = 0
-		del entity
+		entity.exists = False
+		# del entity # this can be commented out because it is not in the array.
 
 	def animals(self):
 		return self.animal_map[self.animal_map.nonzero()]
