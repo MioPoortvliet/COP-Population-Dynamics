@@ -151,7 +151,10 @@ class Rabbit(Animal):
             return False # Make baby?
 
     def eat_possible(self, other):
-        return False
+        if isinstance(other, Carrot):
+            return True
+        else:
+            return False
 
 class Carrot(Entity):
     def __init__(self, *args, **kwargs):

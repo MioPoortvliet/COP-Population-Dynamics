@@ -8,33 +8,33 @@ import numpy as np
 fox_density = 0.#001
 rabbit_density = 0.0075
 carrot_density = 0.15
-map_size = 100
-settings = {
-    "map_size": map_size,
-    "animals": ["fox", "rabbit"],
-    "foods": ["carrot", ],
-    "fox": int(fox_density * map_size ** 2),
-    "rabbit": int(rabbit_density * map_size ** 2),
-    "carrot": int(carrot_density * map_size ** 2),
-    "food_spawn_chance": {"carrot": 0.0004},
-    "stop_at_zero": False,
-    "animal_std": 0,
-    "avoid_extinction": True
-}
-
-# map_size = 50
+# map_size = 100
 # settings = {
 #     "map_size": map_size,
 #     "animals": ["fox", "rabbit"],
 #     "foods": ["carrot", ],
-#     "fox": 2,
-#     "rabbit": 3,
-#     "carrot": 20,
-#     "food_spawn_chance": {"carrot": 0.0001},
-#     "stop_at_zero": True,
+#     "fox": int(fox_density * map_size ** 2),
+#     "rabbit": int(rabbit_density * map_size ** 2),
+#     "carrot": int(carrot_density * map_size ** 2),
+#     "food_spawn_chance": {"carrot": 0.0004},
+#     "stop_at_zero": False,
 #     "animal_std": 0,
-#     "avoid_extinction": False
+#     "avoid_extinction": True
 # }
+
+map_size = 50
+settings = {
+    "map_size": map_size,
+    "animals": ["fox", "rabbit"],
+    "foods": ["carrot", ],
+    "fox": 2,
+    "rabbit": 3,
+    "carrot": 20,
+    "food_spawn_chance": {"carrot": 0.0001},
+    "stop_at_zero": True,
+    "animal_std": 0,
+    "avoid_extinction": False
+}
 
 fox_inits = {
     "mean_speed": 2,

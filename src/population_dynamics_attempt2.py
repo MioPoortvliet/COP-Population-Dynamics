@@ -124,7 +124,7 @@ class AnimalEvolution():
 				# break from the direction loop
 				break
 
-	def adjacent_check(self, animal):
+	def adjacent_interactions(self, animal):
 		neighbours_idx = np.mod(np.array(animal.position) + nn_array, self.settings["map_size"])
 
 		for neighbour_idx in neighbours_idx:
@@ -191,16 +191,17 @@ class AnimalEvolution():
 
 		for animal in animals:
 			# Animal is still alive and may move
-			if animal.steps_taken <= animal.speed:
+			if animal.steps_taken < animal.speed:
 				self.attempt_to_move_animal(animal)
 
 				# See if there is interaction with neighbours
-				self.adjacent_check(animal)
+				self.adjacent_interactions(animal)
 
 				# not elif, animal can move and eat in the same step
 				if not self.food_map[animal.position] == 0:
-					animal.eat(self.food_map[animal.position])
-					self.delete_entity(self.food_map[animal.position], self.food_map)
+					if animal.eat_possible(self.food_map[animal.position]):
+						animal.eat(self.food_map[animal.position])
+						self.delete_entity(self.food_map[animal.position], self.food_map)
 
 				if animal.hunger >= animal.max_hunger:
 					self.delete_entity(animal, self.animal_map)
@@ -318,3 +319,14 @@ class AnimalEvolution():
 					break  # We found the right animal, break inner loop
 
 		process_statistics(self.animal_genes[cycle, ::, ::, ::], animal_genes, len(self.animal_objects))
+
+	def printable_map(self):
+		map_identifier = np.zeros(shape=(self.settings["map_size"], self.settings["map_size"]), dtype=np.int)
+
+		for entity in self.animals():
+			map_identifier[entity.position] += entity.identifier
+
+		for entity in self.foods():
+			map_identifier[entity.position] += entity.identifier
+
+		return map_identifier
