@@ -80,7 +80,7 @@ def run_sim(animal_std=settings["animal_std"], id="no_id", maxcycles=1000):
 
     for i, animal in enumerate(animal_objects.keys()):
         animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(0, 3))
-        animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(3, 8))
+        animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(3, 9))
 
 
 

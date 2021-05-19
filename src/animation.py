@@ -28,7 +28,8 @@ class MapAnimation:
     						"max_age",
     						"age",
     						"hunger",
-    						"libido"
+    						"libido",
+                             "steps_taken"
 		]
         
         self.figure = plt.figure()
@@ -59,10 +60,10 @@ class MapAnimation:
         self.lines_fox_1   = [self.ax_fox_1.plot(self.genes[::, 0, i, 0], label=label) for i, label in enumerate(self.genes_labels[0:3])]
         
         self.ax_rabbit_2     = self.figure.add_subplot(self.gs[4:,0:n])
-        self.lines_rabbit_2   = [self.ax_rabbit_2.plot(self.genes[::, 1, i+3, 0], label=label) for i, label in enumerate(self.genes_labels[3:8])]
+        self.lines_rabbit_2   = [self.ax_rabbit_2.plot(self.genes[::, 1, i+3, 0], label=label) for i, label in enumerate(self.genes_labels[3:9])]
         
         self.ax_fox_2        = self.figure.add_subplot(self.gs[4:,n:2*n])
-        self.lines_fox_2   = [self.ax_fox_2.plot(self.genes[::, 0, i+3, 0], label=label) for i, label in enumerate(self.genes_labels[3:8])]
+        self.lines_fox_2   = [self.ax_fox_2.plot(self.genes[::, 0, i+3, 0], label=label) for i, label in enumerate(self.genes_labels[3:9])]
         
     def update(self,j):
         """

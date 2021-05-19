@@ -132,7 +132,7 @@ class AnimalEvolution():
 
     def run_cycles(self, maxcycles=10, printskip=15):
         self.stats = np.zeros(shape=(maxcycles + 1, len(self.animal_objects) + len(self.food_objects)))
-        self.animal_stats = np.zeros((maxcycles+1, len(self.animal_objects), 8, 2))
+        self.animal_stats = np.zeros((maxcycles+1, len(self.animal_objects), 9, 2))
         self.write_stats(0)
 
         # map_graph(self.printable_map())
@@ -158,9 +158,9 @@ class AnimalEvolution():
                             position = zero_idx[randint(0, zero_idx.shape[0]-1),::]
                             self.position_entities([animal], positions=[tuple(position)])
             self.cycle()
+            self.write_stats(cycle + 1)
             self.reset_animals()
             self.spawn_food()
-            self.write_stats(cycle + 1)
 
         # assert np.sum(self.stats[cycle, ::]) <= self.settings["map_size"]**2 # from old version where this could go wrong
 
@@ -169,7 +169,7 @@ class AnimalEvolution():
     def write_stats(self, cycle):
         all_animals_on_map = self.animals()
         # Animal ID, properties+Animal number,
-        animal_stats = np.zeros((len(all_animals_on_map), 9))
+        animal_stats = np.zeros((len(all_animals_on_map), 10))
 
         for food in self.foods():
             for i, obj in enumerate(self.food_objects.values()):
@@ -187,7 +187,8 @@ class AnimalEvolution():
                         animal.max_age,
                         animal.age,
                         animal.hunger,
-                        animal.libido
+                        animal.libido,
+                        animal.steps_taken
                     ])
 
                     self.stats[cycle, i+1+j] += 1
