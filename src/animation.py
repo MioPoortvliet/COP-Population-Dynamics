@@ -41,6 +41,7 @@ class MapAnimation:
         cmap = LinearSegmentedColormap.from_list("cmap_name", colors, N=6)
         norm = mpl.colors.Normalize(vmin=0, vmax=6)
         self.map_image = self.ax.imshow(self.sim.printable_map(), norm=norm, cmap=cmap)
+        self.frame_text = self.ax.text(.86,1.01,"frame 0", transform=self.ax.transAxes)
         self.cbar = self.figure.colorbar(self.map_image, cax=self.ax_cb)
         self.cbar.set_ticks(np.array([1, 2, 3 , 4, 5])+.5)
         self.cbar.set_ticklabels(["Carrot", "Rabbit", "Rabbit+Carrot", "Fox", "Fox+Carrot"])
@@ -72,6 +73,7 @@ class MapAnimation:
         :param j: animation frame number
         :type j: int
         """
+        self.frame_text.set_text("frame "+str(j))
         stats, genes = self.sim.run_cycles(maxcycles=self.frameskip)
         self.stats = np.append(self.stats, stats, axis=0)
         self.genes = np.append(self.genes, genes, axis=0)
