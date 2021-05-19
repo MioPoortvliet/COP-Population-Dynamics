@@ -158,7 +158,7 @@ class AnimalEvolution():
                             position = zero_idx[randint(0, zero_idx.shape[0]-1),::]
                             self.position_entities([animal], positions=[tuple(position)])
             self.cycle()
-            self.write_stats(cycle + 1)
+            self.write_stats(cycle+1)
             self.reset_animals()
             self.spawn_food()
 
@@ -310,7 +310,6 @@ class AnimalEvolution():
             animal.steps_taken += 1
 
         elif recursions < 4:
-            print(self.animal_map[new_pos])
             direction += choice([-1, 1])
             self.move_animal(animal, direction%4 , recursions + 1)
 

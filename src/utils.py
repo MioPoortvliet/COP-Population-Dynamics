@@ -53,7 +53,7 @@ def direction_from_difference(difference):
 
 @njit
 def process_statistics(to_write, to_read, N):
-	for m in range(8):
+	for m in range(9):
 		for i in range(N):
 			to_read_sum = np.sum(to_read[to_read[::, -1] == i][::, m])
 			if to_read_sum == 0:

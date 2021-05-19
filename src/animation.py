@@ -29,7 +29,7 @@ class MapAnimation:
     						"age",
     						"hunger",
     						"libido",
-                             "steps_taken"
+                            "steps_taken"
 		]
         
         self.figure = plt.figure()
@@ -60,10 +60,10 @@ class MapAnimation:
         self.lines_fox_1   = [self.ax_fox_1.plot(self.genes[::, 0, i, 0], label=label) for i, label in enumerate(self.genes_labels[0:3])]
         
         self.ax_rabbit_2     = self.figure.add_subplot(self.gs[4:,0:n])
-        self.lines_rabbit_2   = [self.ax_rabbit_2.plot(self.genes[::, 1, i+3, 0], label=label) for i, label in enumerate(self.genes_labels[3:9])]
+        self.lines_rabbit_2   = [self.ax_rabbit_2.plot(self.genes[::, 1, i+3, 0], label=label) for i, label in enumerate(self.genes_labels[8:9])]
         
         self.ax_fox_2        = self.figure.add_subplot(self.gs[4:,n:2*n])
-        self.lines_fox_2   = [self.ax_fox_2.plot(self.genes[::, 0, i+3, 0], label=label) for i, label in enumerate(self.genes_labels[3:9])]
+        self.lines_fox_2   = [self.ax_fox_2.plot(self.genes[::, 0, i+3, 0], label=label) for i, label in enumerate(self.genes_labels[8:9])]
         
     def update(self,j):
         """
@@ -85,8 +85,8 @@ class MapAnimation:
         
         self.lines_rabbit_1   = [self.ax_rabbit_1.plot(self.genes[::, 1, i+self.labels[0], 0], label=label) for i, label in enumerate(self.genes_labels[0:3])]
         self.lines_fox_1   = [self.ax_fox_1.plot(self.genes[::, 0, i, 0], label=label) for i, label in enumerate(self.genes_labels[0:3])]
-        self.lines_rabbit_2   = [self.ax_rabbit_2.plot(self.genes[::, 1, i+3, 0], label=label) for i, label in enumerate(self.genes_labels[3:8])]
-        self.lines_fox_2   = [self.ax_fox_2.plot(self.genes[::, 0, i+3, 0], label=label) for i, label in enumerate(self.genes_labels[3:8])]
+        self.lines_rabbit_2   = [self.ax_rabbit_2.plot(self.genes[::, 1, i+8, 0], label=label) for i, label in enumerate(self.genes_labels[8:9])]
+        self.lines_fox_2   = [self.ax_fox_2.plot(self.genes[::, 0, i+8, 0], label=label) for i, label in enumerate(self.genes_labels[8:9])]
         self.ax_fox_1.legend(bbox_to_anchor=(.7, 1,.3,.4))
         self.ax_fox_2.legend(bbox_to_anchor=(.5, 1,.3,.4))
         
