@@ -27,7 +27,7 @@ class Animal(Entity):
         self.sight_radius = minimum_int(gauss(mean_sight_radius, std))
         self.max_hunger = minimum_int(gauss(mean_max_hunger, std*3))
         self.last_direction = randint(0, 3)
-        self.direction_randomness = 0.4
+        self.direction_randomness = .4
         self.max_age = minimum_int(gauss(mean_max_age, std*3))
 
         self.nutritional_value *= self.max_hunger

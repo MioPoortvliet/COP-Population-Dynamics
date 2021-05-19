@@ -316,11 +316,11 @@ class AnimalEvolution():
 			pass
 
 	def new_coords(self, position, direction):
-		if direction == 0:
-			return position[0] % self.settings["map_size"], (position[1] + 1) % self.settings["map_size"]
-		elif direction == 1:
-			return (position[0] + 1) % self.settings["map_size"], position[1] % self.settings["map_size"]
-		elif direction == 2:
-			return position[0] % self.settings["map_size"], (position[1] - 1) % self.settings["map_size"]
-		elif direction == 3:
-			return (position[0] - 1) % self.settings["map_size"], position[1] % self.settings["map_size"]
+		if direction == 0: # up
+			return position[0], (position[1] + 1) % self.settings["map_size"]
+		elif direction == 1: # right
+			return (position[0] + 1) % self.settings["map_size"], position[1]
+		elif direction == 2: # down
+			return position[0], (position[1] - 1) % self.settings["map_size"]
+		elif direction == 3: # left
+			return (position[0] - 1) % self.settings["map_size"], position[1]

@@ -37,19 +37,19 @@ def nonzero_idx(a,x,y):
 
 @njit
 def direction_from_difference(difference):
-	largest_idx = difference.argmax()
+	largest_idx = np.abs(difference).argmax()
 	sign_of_largest = np.sign(difference[largest_idx])
 
 	if largest_idx == 0:
 		if sign_of_largest == 1:
-			return 0 # right
+			return 1 # right
 		else:
-			return 2 # left
+			return 3 # left
 	else:
 		if sign_of_largest == 1:
-			return 1 # up
+			return 0 # up
 		else:
-			return 3 # down
+			return 2 # down
 
 @njit
 def process_statistics(to_write, to_read, N):
