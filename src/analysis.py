@@ -7,6 +7,7 @@ from examples.graphs import settings, fox_inits, rabbit_inits
 from src.IO_utils import load_and_concat
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 """
 If you care about the values of the frequancy in the frequency domain,
@@ -47,21 +48,25 @@ def run_analysis(stats):
     plt.show()
     
 if __name__ == "__main__":
-    # animal_objects = {"fox": {"object":Fox, "init":fox_inits}, "rabbit": {"object":Rabbit, "init":rabbit_inits}}
-    # food_objects = {"carrot": Carrot}
+    animal_objects = {"fox": {"object":Fox, "init":fox_inits}, "rabbit": {"object":Rabbit, "init":rabbit_inits}}
+    food_objects = {"carrot": Carrot}
 
     # ae = AnimalEvolution(settings, food_objects, animal_objects)
 
     # stats, genes = ae.run_cycles(maxcycles=1000)
     # population_stats_plot(stats, food_objects, animal_objects)
     # plt.show()
-    
-    stats = np.load("generated/2021-05-14t164643174477-test-std0/stats.npy")
-    plt.figure()
-    plt.plot(stats[::,0])
-    plt.plot(stats[::,1])
-    plt.plot(stats[::,2])
-    plt.show()
+
+    folders = os.listdir("generated/run1/")
+
+    for diriectory in folders
+    stats = np.load("generated/run1/2021-05-19t032016344940-semiSeriousRun_1-std3.0/stats.npy")
+    genes = np.load("generated/run1/2021-05-19t032016344940-semiSeriousRun_1-std3.0/genes.npy")
+
+    population_stats_plot(stats, food_objects, animal_objects)
+    for i, animal in enumerate(animal_objects.keys()):
+        animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(0, 3))
+        animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(3, 8))
     
     run_analysis(stats[::,0])
     run_analysis(stats[::,1])
