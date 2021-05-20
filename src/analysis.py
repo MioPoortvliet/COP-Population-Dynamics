@@ -15,7 +15,7 @@ def run_analysis(stats, ax, N_ignore=100, freq_cut=(1, 100), **kwargs):
     ft_freqs = np.fft.rfftfreq(stats[N_ignore:].shape[0],1)
     ax.plot(ft_freqs[freq_cut[0]:freq_cut[1]],np.abs(ft_stats[freq_cut[0]:freq_cut[1]]), **kwargs)
 
-def analyze_single(path, skipdata=0):
+def analyse_single(path, skipdata=0):
     stats = np.load(f"{path}/stats.npy")
     genes = np.load(f"{path}/genes.npy")
 
@@ -46,10 +46,10 @@ if __name__ == "__main__":
     # population_stats_plot(stats, food_objects, animal_objects)
     # plt.show()
 
-    analyze_single(path="generated/finding_parameters/2021-05-20t154250699648-possiblestable-std0")
+    analyse_single(path="generated/finding_parameters/2021-05-20t154250699648-possiblestable-std0")
 
     path = "generated/finding_parameters/"
     #folders = os.listdir(path)
     #for directory in folders:
     #    print(path+directory)
-    #    analyze_single(path+directory)
+    #    analyse_single(path+directory)
