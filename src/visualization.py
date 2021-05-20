@@ -14,7 +14,7 @@ def map_graph(simulation_map):
 	cbar.set_ticklabels(["Carrot", "Rabbit", "Rabbit+Carrot", "Fox", "Fox+Carrot"])
 	plt.show()
 
-def population_stats_plot(stats, food_objects, animal_objects):
+def population_stats_plot(stats, food_objects, animal_objects, title=""):
 	food_names = list(food_objects.keys())
 	animal_names = list(animal_objects.keys())
 	plt.figure()
@@ -23,20 +23,22 @@ def population_stats_plot(stats, food_objects, animal_objects):
 
 
 	ax2 = ax1.twinx()
-	ax2.set_ylabel("Food units", color="r")
-	ax2.tick_params(axis="y", labelcolor="r")
+	ax1.set_ylabel("Food units", color="r")
+	ax1.tick_params(axis="y", labelcolor="r")
 
 	color = ["red", "grey"]
-	for i in range(len(animal_names)):
-		ax1.plot(stats[::,i+len(food_names)], label=animal_names[i], color=color[i])
-
 	for i in range(len(food_names)):
-		ax2.plot(stats[::,i], label=food_names[i], color='orange')
+		ax1.plot(stats[::,i], label=food_names[i], color='orange')
 
-	ax1.set_ylim(0)
+	for i in range(len(animal_names)):
+		ax2.plot(stats[::,i+len(food_names)], label=animal_names[i], color=color[i])
+
+
 	ax2.set_ylim(0)
+	ax1.set_ylim(0)
 
 	fig.legend()
+	fig.suptitle(title)
 	fig.show()
 
 
