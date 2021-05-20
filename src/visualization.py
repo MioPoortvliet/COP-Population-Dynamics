@@ -21,12 +21,11 @@ def population_stats_plot(stats: np.ndarray, food_objects: dict, animal_objects:
 	food_names = list(food_objects.keys())
 	animal_names = list(animal_objects.keys())
 	fig, ax1 = plt.subplots(figsize=(8,6))
-	ax1.set_ylabel("Animal units")
-
-
-	ax2 = ax1.twinx()
 	ax1.set_ylabel("Food units", color="r")
 	ax1.tick_params(axis="y", labelcolor="r")
+
+	ax2 = ax1.twinx()
+	ax2.set_ylabel("Animal units")
 
 	color = ["red", "grey"]
 	for i in range(len(food_names)):
