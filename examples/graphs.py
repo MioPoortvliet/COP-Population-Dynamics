@@ -61,7 +61,7 @@ def run_sim(_settings=settings, id="no_id", basepath="generated/", maxcycles=100
     # Set up file structure
     # Cut off folder seperator if it is present
     if basepath[-1] == '/' or basepath[-1] == '\\':
-        basepath = basepath[:-2]
+        basepath = basepath[:-1]
     # define fpath
     fpath = f"{basepath}/{slugify(datetime.now().isoformat())}-{id}-std{_settings['animal_std']}/"
     ensure_dir(fpath)
