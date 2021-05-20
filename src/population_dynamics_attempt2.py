@@ -251,7 +251,7 @@ class AnimalEvolution():
 			if cycle % printskip == 0: # Print what cycle we are calculating
 				print(cycle)
 
-			if np.any(self.population[cycle-1, 1::] <= 2) and cycle != 0: # check if there are less than two animals of any kind.
+			if np.any(self.population[cycle-1, 1::] <= 0) and cycle != 0: # check if there are less than two animals of any kind.
 				# break simulation if there is no future
 				if self.settings["stop_at_zero"]:
 					# There are not enough animals alive
@@ -279,7 +279,7 @@ class AnimalEvolution():
 			self.write_stats(cycle)
 
 		# assert np.sum(self.stats[cycle, ::]) <= self.settings["map_size"]**2 # from old version where this could go wrong
-
+		
 		return self.population[:cycle, ::], self.animal_genes[:cycle, ::, ::, ::]
 
 	def delete_entity(self, entity, map):

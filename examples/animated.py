@@ -10,5 +10,5 @@ if __name__ == "__main__":
     food_objects = {"carrot": Carrot}
 
     ae = AnimalEvolution(settings, food_objects, animal_objects)
-    simulation = MapAnimation(ae, frameskip=1)
+    simulation = MapAnimation(ae, frameskip=2)
     simulation.run()
