@@ -26,7 +26,7 @@ def nearest_nonzero_idx(a,x,y):
 		return idx[((idx - [x,y])**2).sum(1).argmin()]
 
 #@njit
-def nonzero_idx(a,x,y):
+def nonzero_idx(a: np.array, x: int, y: int) -> np.array:
 	""""From https://stackoverflow.com/questions/43306291/find-the-nearest-nonzero-element-and-corresponding-index-in-a-2d-numpy-array"""
 	idx = np.argwhere(a)
 

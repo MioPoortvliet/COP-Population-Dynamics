@@ -170,7 +170,7 @@ def pathfinding_check(animal_position, animal_sight_radius, entity_map):
     # Are there entities within range?
     n = np.sum(differences)
     if n > 0:
-        nearest_sorted = other_idx[np.argsort((diff ** 2).sum(1))][:n]
+        nearest_sorted = other_idx[np.argsort((diff[::,0] ** 2 + diff[::,1] ** 2))][:n]
 
         return n, nearest_sorted
 
