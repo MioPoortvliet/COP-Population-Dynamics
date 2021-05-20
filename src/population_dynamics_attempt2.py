@@ -313,6 +313,7 @@ class AnimalEvolution:
 				if self.settings["stop_at_zero"]:
 					# There are not enough animals alive
 					print("Premature ending")
+					cycle -= 1
 					break
 
 				# Otherwise force at least two animals of every kind
@@ -335,7 +336,7 @@ class AnimalEvolution:
 			self.cycle()
 			self.write_stats(cycle)
 
-		return self.population[:cycle-1, ::], self.animal_genes[:cycle-1, ::, ::, ::]
+		return self.population[:cycle, ::], self.animal_genes[:cycle, ::, ::, ::]
 
 	def delete_entity(self, entity, map:np.ndarray) -> None:
 		"""Remove entity from the map and flag it to not be interacted with."""

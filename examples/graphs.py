@@ -90,7 +90,7 @@ def run_sim(_settings=settings, id="no_id", basepath="generated/", maxcycles=100
 
 
 if __name__ == "__main__":
-    run_sim(0, maxcycles=50000, id="test")
+    run_sim(settings, maxcycles=50000, id="test")
     # for std in np.linspace(0, 2, 10):
     #     for run_id in range(3):
     #         run_sim(std, maxcycles=50000, id=f"seriousRun-{run_id}")
