@@ -17,8 +17,7 @@ def map_graph(simulation_map):
 def population_stats_plot(stats, food_objects, animal_objects, title=""):
 	food_names = list(food_objects.keys())
 	animal_names = list(animal_objects.keys())
-	plt.figure()
-	fig, ax1 = plt.subplots()
+	fig, ax1 = plt.subplots(figsize=(8,6))
 	ax1.set_ylabel("Animal units")
 
 

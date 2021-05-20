@@ -10,12 +10,12 @@ import matplotlib.pyplot as plt
 import os
 
         
-def run_analysis(stats, ax, N_ignore=100, freq_cut=(1, 100), **kwargs):
+def run_analysis(stats, ax, N_ignore=100, freq_cut=(1, 50), **kwargs):
     ft_stats = np.fft.rfft(stats[N_ignore:])
     ft_freqs = np.fft.rfftfreq(stats[N_ignore:].shape[0],1)
     ax.plot(ft_freqs[freq_cut[0]:freq_cut[1]],np.abs(ft_stats[freq_cut[0]:freq_cut[1]]), **kwargs)
 
-def analyze_single(path, skipdata=0):
+def analyse_single(path, skipdata=100):
     stats = np.load(f"{path}/stats.npy")
     genes = np.load(f"{path}/genes.npy")
 
@@ -24,7 +24,7 @@ def analyze_single(path, skipdata=0):
     #    animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(0, 3))
     #    animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(3, 8))
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(8,6))
 
     run_analysis(stats[::, 0], ax, skipdata, label="carrots", color="orange")
     run_analysis(stats[::, 1], ax, skipdata, label="fox", color="red")
@@ -46,8 +46,10 @@ if __name__ == "__main__":
     # population_stats_plot(stats, food_objects, animal_objects)
     # plt.show()
 
-    analyze_single(path="generated/finding_parameters/2021-05-20t154250699648-possiblestable-std0")
-
+    analyse_single(path="generated/finding_parameters/2021-05-20t173011455025-test-std0")
+    # generated/run1/2021-05-20t154159037815-test-std0
+    # generated/finding_parameters/2021-05-20t163730727533-test-std0
+    
     path = "generated/finding_parameters/"
     #folders = os.listdir(path)
     #for directory in folders:

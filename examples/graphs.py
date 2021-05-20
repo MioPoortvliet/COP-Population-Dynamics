@@ -28,7 +28,7 @@ settings = {
 #     "animals": ["fox", "rabbit"],
 #     "foods": ["carrot", ],
 #     "fox": 2,
-#     "rabbit": 3,
+#     "rabbit": 4,
 #     "carrot": 20,
 #     "food_spawn_chance": {"carrot": 0.0001},
 #     "stop_at_zero": True,
@@ -40,7 +40,7 @@ fox_inits = {
     "mean_speed": 3,
     "mean_reproductive_drive": 100,
     "mean_sight_radius": 5,
-    "mean_max_hunger": 5000,
+    "mean_max_hunger": 4000,
     "mean_max_age": 10000
 }
 rabbit_inits = {
@@ -49,7 +49,7 @@ rabbit_inits = {
     "mean_sight_radius": 10,
     "mean_max_hunger": 400,
     "mean_max_age": 4000,
-    "nutritional_value": 500
+    "nutritional_value": 400
 }
 
 
@@ -85,7 +85,7 @@ def run_sim(animal_std=settings["animal_std"], id="no_id", maxcycles=1000):
 
 
 if __name__ == "__main__":
-    run_sim(0, maxcycles=10000, id="test")
+    run_sim(0, maxcycles=50000, id="test")
     # for std in np.linspace(0, 2, 10):
     #     for run_id in range(3):
     #         run_sim(std, maxcycles=50000, id=f"seriousRun-{run_id}")
