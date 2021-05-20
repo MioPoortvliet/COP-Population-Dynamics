@@ -2,13 +2,14 @@ from src.animals import Fox, Rabbit, Carrot
 from src.population_dynamics import AnimalEvolution
 from src.visualization import map_graph, population_stats_plot, animal_stats_plot, MapPlot
 from src.animation import MapAnimation
-from examples.graphs import settings, fox_inits, rabbit_inits
+from examples.graphs import settings, animal_objects, food_objects
 import numpy as np
 
 if __name__ == "__main__":
-    animal_objects = {"fox": {"object":Fox, "init":fox_inits}, "rabbit": {"object":Rabbit, "init":rabbit_inits}}
-    food_objects = {"carrot": Carrot}
-
+    """
+    Runs simulation while generating the animation. The settings are imported from examples/graphs.py.
+    Change the frameskip parameter to animate a frame only every so many cycles. This can speed up the simulation quite a bit.
+    """
     ae = AnimalEvolution(settings, food_objects, animal_objects)
-    simulation = MapAnimation(ae, frameskip=2)
+    simulation = MapAnimation(ae, frameskip=1)
     simulation.run()

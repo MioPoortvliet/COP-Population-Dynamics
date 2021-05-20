@@ -29,7 +29,7 @@ def analyse_single(path:str, skipdata=0) -> None:
         animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(0, 2))
         animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(2, 8))
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(8,6))
 
     # Carrot, Fox, Rabbit population Fourier analysis
     fourier_analysis(stats[::, 0], ax, skipdata, label="carrots", color="orange")

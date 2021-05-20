@@ -22,11 +22,25 @@ settings = {
     "avoid_extinction": False
 }
 
+# map_size = 50
+# settings = {
+#     "map_size": map_size,
+#     "animals": ["fox", "rabbit"],
+#     "foods": ["carrot", ],
+#     "fox": 2,
+#     "rabbit": 4,
+#     "carrot": 20,
+#     "food_spawn_chance": {"carrot": 0.0001},
+#     "stop_at_zero": True,
+#     "animal_std": 0,
+#     "avoid_extinction": False
+# }
+
 fox_inits = {
     "mean_speed": 3,
     "mean_reproductive_drive": 200,
     "mean_sight_radius": 5,
-    "mean_max_hunger": 1900,
+    "mean_max_hunger": 4000,
     "mean_max_age": 10000
 }
 rabbit_inits = {
@@ -35,7 +49,7 @@ rabbit_inits = {
     "mean_sight_radius": 10,
     "mean_max_hunger": 400,
     "mean_max_age": 4000,
-    "nutritional_value": 500
+    "nutritional_value": 400
 }
 
 # Set up simulation
@@ -81,3 +95,4 @@ if __name__ == "__main__":
     #     for run_id in range(1):
     #         settings["animal_std"] = std
     #         run_sim(settings, basepath="generated/evolution_run1", maxcycles=50000, id=f"seriousRun-{run_id}")
+
