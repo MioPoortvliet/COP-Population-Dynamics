@@ -26,8 +26,8 @@ def analyse_single(path:str, skipdata=0) -> None:
     predator_prey(stats[skipdata:,1], stats[skipdata:,0])
 
     for i, animal in enumerate(animal_objects.keys()):
-        animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(0, 3))
-        animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(3, 8))
+        animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(0, 2))
+        animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(2, 8))
 
     fig, ax = plt.subplots()
 
@@ -44,7 +44,7 @@ def analyse_single(path:str, skipdata=0) -> None:
 
 if __name__ == "__main__":
     #analyse_single(path="generated/finding_parameters/2021-05-20t154250699648-possiblestable-std0")
-    analyse_single("generated/finding_parameters/2021-05-20t161815999948-seriousRun-0-std0.0")
+    analyse_single("singleruns/2021-05-20t172219201553-evolution_largemap-std0.0")
 
     # Uncomment to batch process a folder
     """

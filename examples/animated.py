@@ -1,5 +1,5 @@
 from src.animals import Fox, Rabbit, Carrot
-from src.population_dynamics_attempt2 import AnimalEvolution
+from src.population_dynamics import AnimalEvolution
 from src.visualization import map_graph, population_stats_plot, animal_stats_plot, MapPlot
 from src.animation import MapAnimation
 from examples.graphs import settings, fox_inits, rabbit_inits

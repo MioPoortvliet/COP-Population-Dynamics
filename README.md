@@ -23,6 +23,6 @@ We intended to write a general evolution engine that will accept any static (foo
 
 ##Important files
 - ```src/population_dynamics.py``` contains the structure of the playing field.
-- ```src/animals``` contains class structure (```Entity```, ```Animal```, ```Food```) and specifically ```Carrot```, ```Rabbit``` and ```Fox```.
+- ```src/animals``` contains class structure (```Entity```, ```Animal```) and specifically ```Carrot```, ```Rabbit``` and ```Fox```.
 - Examples can be found in the examples folder. 
 - You can process data using ```src/analysis.py```.

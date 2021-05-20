@@ -5,12 +5,14 @@ from numba import njit
 
 
 class Entity():
+    """Baseclass of anything on the board"""
     def __init__(self, nutritional_value=15):
         self.position = (None, None)
         self.exists = True # Flag variable to combat copies of array still existing
         self.nutritional_value = nutritional_value
 
 class Animal(Entity):
+    """For dynamic entities on the board"""
 
     def __init__(self, mean_speed, mean_reproductive_drive, mean_sight_radius, std, mean_max_hunger, mean_max_age, *args, **kwargs):
         # Spatial properties
@@ -34,6 +36,7 @@ class Animal(Entity):
         self.age = 0
 
     def eat(self, other):
+        """Changes hunger depending on the other"""
         self.hunger = max((0, self.hunger-other.nutritional_value))
         #print("chomp")
 
@@ -45,6 +48,7 @@ class Animal(Entity):
             return False
 
     def libido_check(self):
+        """"Returns true if animal is DTF"""
         if self.libido >= self.reproductive_drive:
             return True
         else:
@@ -57,6 +61,7 @@ class Fox(Animal):
         super(Fox, self).__init__(*args, **kwargs)
 
     def pathfinding(self, animal_map, food_map):
+        """Decides where to go given the current state of the board."""
         animals_in_sight, sorted_animals_idx = pathfinding_check(self.position, self.sight_radius, animal_map.astype(np.bool_))
 
         # Check if there are entities within sight radius
@@ -80,6 +85,7 @@ class Fox(Animal):
 
 
     def interact(self, neighbour_animal):
+        """Check for interactions with neighbour animals"""
         # animal is fox
         # next to Fox
         if isinstance(neighbour_animal, Fox) and (not self.food_check()) and (not neighbour_animal.food_check()) and self.libido_check():
@@ -89,6 +95,7 @@ class Fox(Animal):
             return False # Make baby?
 
     def eat_possible(self, other):
+        """Return true if other is edible"""
         if isinstance(other, Rabbit):
             return True
         else:
@@ -100,6 +107,7 @@ class Rabbit(Animal):
         super(Rabbit, self).__init__(*args, **kwargs)
 
     def pathfinding(self, animal_map, food_map):
+        """Decides where to go given the current state of the board."""
         animals_in_sight, sorted_animals_idx = pathfinding_check(self.position, self.sight_radius, animal_map.astype(np.bool_))
         foods_in_sight, sorted_foods_idx = pathfinding_check(self.position, self.sight_radius, food_map.astype(np.bool_))
 
@@ -134,6 +142,7 @@ class Rabbit(Animal):
         return round(gauss(self.last_direction, self.direction_randomness)) % 4
 
     def interact(self, neighbour_animal):
+        """Check for interactions with neighbour animals"""
         # animal is rabbit
         # next to rabbit
         if isinstance(neighbour_animal, Rabbit) and (not self.food_check()) and (not neighbour_animal.food_check()) and self.libido_check():
@@ -143,19 +152,23 @@ class Rabbit(Animal):
             return False # Make baby?
 
     def eat_possible(self, other):
+        """Return true if other is edible"""
         if isinstance(other, Carrot):
             return True
         else:
             return False
 
 class Carrot(Entity):
+    """Specific implementation of a food"""
     def __init__(self, *args, **kwargs):
         self.identifier = 1
         super(Carrot, self).__init__()
         self.nutritional_value = 30
 
-#@njit
+#@njit # Having problems with nonzero_idx as function, don't want to spend more time
 def pathfinding_check(animal_position, animal_sight_radius, entity_map):
+    """Given an animal's position, sight radius and map it looks for and sorts
+    the nearest entities on the map from closest to furthest."""
     other_idx = nonzero_idx(entity_map, *animal_position)
     if other_idx is None:
         return 0, None

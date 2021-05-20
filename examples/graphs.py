@@ -1,5 +1,5 @@
 from src.animals import Fox, Rabbit, Carrot
-from src.population_dynamics_attempt2 import AnimalEvolution
+from src.population_dynamics import AnimalEvolution
 from src.visualization import population_stats_plot, animal_stats_plot
 from src.IO_utils import to_file, slugify, ensure_dir, to_json
 from datetime import datetime
@@ -18,7 +18,7 @@ settings = {
     "carrot": int(carrot_density * map_size ** 2),
     "food_spawn_chance": {"carrot": 0.0004},
     "stop_at_zero": True,
-    "animal_std": 0.,
+    "animal_std": 0.1,
     "avoid_extinction": False
 }
 
@@ -76,7 +76,7 @@ def run_sim(_settings=settings, id="no_id", basepath="generated/", maxcycles=100
 
 
 if __name__ == "__main__":
-    run_sim(settings, basepath="singleruns", maxcycles=10000, id="evolution_largemap")
+    run_sim(settings, basepath="generated/singleruns", maxcycles=10000, id="evolution_largemap")
     # for std in np.linspace(0., .8, 5):
     #     for run_id in range(1):
     #         settings["animal_std"] = std
