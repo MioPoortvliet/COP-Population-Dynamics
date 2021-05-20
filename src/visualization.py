@@ -3,7 +3,8 @@ import matplotlib as mpl
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
-def map_graph(simulation_map):
+
+def map_graph(simulation_map: np.ndarray) -> None:
 	figure, ax = plt.subplots(figsize=(8,6))
 	colors= ["green","orange","white","white","red","red"]
 	cmap = LinearSegmentedColormap.from_list("cmap_name", colors, N=6)
@@ -14,7 +15,7 @@ def map_graph(simulation_map):
 	cbar.set_ticklabels(["Carrot", "Rabbit", "Rabbit+Carrot", "Fox", "Fox+Carrot"])
 	plt.show()
 
-def population_stats_plot(stats, food_objects, animal_objects, title=""):
+def population_stats_plot(stats: np.ndarray, food_objects: dict, animal_objects: dict, title="") -> None:
 	food_names = list(food_objects.keys())
 	animal_names = list(animal_objects.keys())
 	plt.figure()
@@ -42,12 +43,12 @@ def population_stats_plot(stats, food_objects, animal_objects, title=""):
 	fig.show()
 
 
-def animal_stats_plot(stats, title="", labels=(0, 8)):
+def animal_stats_plot(stats: np.ndarray, title="", labels=(0, 8)) -> None:
 	plt.figure()
 	x = np.arange(stats.shape[0])
 	stat_labels = [		"speed",
-						"reproductive_drive",
 						"sight_radius",
+						"reproductive_drive",
 						"max_hunger",
 						"max_age",
 						"age",
@@ -67,7 +68,7 @@ def animal_stats_plot(stats, title="", labels=(0, 8)):
 	plt.title(title)
 	plt.show()
 
-def stats_plot(stats, food_objects, animal_objects):
+def stats_plot(stats: np.ndarray, food_objects: dict, animal_objects: dict) -> None:
 	plt.figure()
 	names = list(food_objects.keys())+list(animal_objects.keys())
 	for i in range(stats.shape[1]):
@@ -75,12 +76,19 @@ def stats_plot(stats, food_objects, animal_objects):
 	plt.legend()
 	plt.show()
 
+def predator_prey(predator, prey):
+	plt.figure()
+	plt.plot(predator, prey)
+	plt.xlabel("Predator")
+	plt.ylabel("Prey")
+	plt.show()
+
 class MapPlot:
-	def __init__(self, simulation_map, animal_evolution):
+	def __init__(self, simulation_map: np.ndarray, animal_evolution: np.ndarray) -> None:
 		self.figure, self.ax = plt.subplots(figsize=(8,6))
 		self.map_image = self.ax.imshow(simulation_map)
 
-	def update_map_plot(self, simulation_map):
+	def update_map_plot(self, simulation_map: np.ndarray) -> None:
 		self.map_image.set_data(simulation_map)
 		self.figure.canvas.draw()
 		self.figure.canvas.flush_events()
