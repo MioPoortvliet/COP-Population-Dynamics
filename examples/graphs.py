@@ -56,7 +56,7 @@ rabbit_inits = {
 animal_objects = {"fox": {"object": Fox, "init": fox_inits}, "rabbit": {"object": Rabbit, "init": rabbit_inits}}
 food_objects = {"carrot": Carrot}
 
-def run_sim(_settings=settings, id="no_id", basepath="generated/", maxcycles=1000) -> None:
+def run_sim(_settings=settings, id="no_id", basepath="generated/", maxcycles=1000, food_objects=food_objects, animal_objects = animal_objects) -> str:
     """Run a simulation and write it to file identified by id."""
     # Set up file structure
     # Cut off folder seperator if it is present
@@ -87,6 +87,8 @@ def run_sim(_settings=settings, id="no_id", basepath="generated/", maxcycles=100
     for i, animal in enumerate(animal_objects.keys()):
         animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(0, 2))
         animal_stats_plot(genes[::, i, ::, ::], title=animal, labels=(2, 9))
+
+    return fpath
 
 
 if __name__ == "__main__":
