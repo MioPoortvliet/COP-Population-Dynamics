@@ -5,6 +5,7 @@ from matplotlib.colors import LinearSegmentedColormap
 
 
 def map_graph(simulation_map: np.ndarray) -> None:
+	"""Plot the board"""
 	figure, ax = plt.subplots(figsize=(8,6))
 	colors= ["green","orange","white","white","red","red"]
 	cmap = LinearSegmentedColormap.from_list("cmap_name", colors, N=6)
@@ -16,6 +17,7 @@ def map_graph(simulation_map: np.ndarray) -> None:
 	plt.show()
 
 def population_stats_plot(stats: np.ndarray, food_objects: dict, animal_objects: dict, title="") -> None:
+	"""A graph of population size over time"""
 	food_names = list(food_objects.keys())
 	animal_names = list(animal_objects.keys())
 	plt.figure()
@@ -44,6 +46,7 @@ def population_stats_plot(stats: np.ndarray, food_objects: dict, animal_objects:
 
 
 def animal_stats_plot(stats: np.ndarray, title="", labels=(0, 8)) -> None:
+	"""A graph of animal property statistics over time."""
 	plt.figure()
 	x = np.arange(stats.shape[0])
 	stat_labels = [		"speed",
@@ -68,15 +71,8 @@ def animal_stats_plot(stats: np.ndarray, title="", labels=(0, 8)) -> None:
 	plt.title(title)
 	plt.show()
 
-def stats_plot(stats: np.ndarray, food_objects: dict, animal_objects: dict) -> None:
-	plt.figure()
-	names = list(food_objects.keys())+list(animal_objects.keys())
-	for i in range(stats.shape[1]):
-		plt.plot(stats[::,i], label=names[i])
-	plt.legend()
-	plt.show()
-
 def predator_prey(predator, prey):
+	"""Population size of predator on the x axis and of the prey on y axis"""
 	plt.figure()
 	plt.plot(predator, prey)
 	plt.xlabel("Predator")
@@ -84,6 +80,7 @@ def predator_prey(predator, prey):
 	plt.show()
 
 class MapPlot:
+	"""Used by the animation engine to plot. Functions speak for themselves."""
 	def __init__(self, simulation_map: np.ndarray, animal_evolution: np.ndarray) -> None:
 		self.figure, self.ax = plt.subplots(figsize=(8,6))
 		self.map_image = self.ax.imshow(simulation_map)

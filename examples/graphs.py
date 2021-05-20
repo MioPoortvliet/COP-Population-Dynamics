@@ -8,7 +8,7 @@ import numpy as np
 fox_density = 0.0009
 rabbit_density = 0.007
 carrot_density = 0.02
-map_size = 100
+map_size = 150
 settings = {
     "map_size": map_size,
     "animals": ["fox", "rabbit"],
@@ -18,7 +18,7 @@ settings = {
     "carrot": int(carrot_density * map_size ** 2),
     "food_spawn_chance": {"carrot": 0.0004},
     "stop_at_zero": True,
-    "animal_std": 4,
+    "animal_std": 0.,
     "avoid_extinction": False
 }
 
@@ -26,7 +26,7 @@ fox_inits = {
     "mean_speed": 3,
     "mean_reproductive_drive": 200,
     "mean_sight_radius": 5,
-    "mean_max_hunger": 1800,
+    "mean_max_hunger": 1900,
     "mean_max_age": 10000
 }
 rabbit_inits = {
@@ -76,8 +76,8 @@ def run_sim(_settings=settings, id="no_id", basepath="generated/", maxcycles=100
 
 
 if __name__ == "__main__":
-    #run_sim(settings, maxcycles=10000, id="test")
-    for std in np.linspace(0., .8, 5):
-        for run_id in range(1):
-            settings["animal_std"] = std
-            run_sim(settings, basepath="generated/evolution_run1", maxcycles=50000, id=f"seriousRun-{run_id}")
+    run_sim(settings, basepath="singleruns", maxcycles=10000, id="evolution_largemap")
+    # for std in np.linspace(0., .8, 5):
+    #     for run_id in range(1):
+    #         settings["animal_std"] = std
+    #         run_sim(settings, basepath="generated/evolution_run1", maxcycles=50000, id=f"seriousRun-{run_id}")
