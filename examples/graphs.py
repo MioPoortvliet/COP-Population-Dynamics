@@ -8,7 +8,7 @@ import numpy as np
 fox_density = 0.0009
 rabbit_density = 0.007
 carrot_density = 0.02
-map_size = 150
+map_size = 50
 settings = {
     "map_size": map_size,
     "animals": ["fox", "rabbit"],
@@ -56,10 +56,12 @@ rabbit_inits = {
 animal_objects = {"fox": {"object": Fox, "init": fox_inits}, "rabbit": {"object": Rabbit, "init": rabbit_inits}}
 food_objects = {"carrot": Carrot}
 
-def run_sim(_settings=settings, id="no_id", basepath="generated/", maxcycles=1000, food_objects=food_objects, animal_objects = animal_objects) -> str:
+
+def run_sim(_settings=settings, id="no_id", basepath="generated/", maxcycles=1000, food_objects=food_objects,
+            animal_objects=animal_objects) -> str:
     """Run a simulation and write it to file identified by id."""
     # Set up file structure
-    # Cut off folder seperator if it is present
+    # Cut off folder separator if it is present
     if basepath[-1] == '/' or basepath[-1] == '\\':
         basepath = basepath[:-1]
     # define fpath
@@ -67,10 +69,9 @@ def run_sim(_settings=settings, id="no_id", basepath="generated/", maxcycles=100
     ensure_dir(fpath)
 
     # Write simulation parameters to file
-    to_json(fpath+"settings.json", _settings)
-    to_json(fpath+"fox_inits.json", fox_inits)
-    to_json(fpath+"rabbit_inits.json", rabbit_inits)
-
+    to_json(fpath + "settings.json", _settings)
+    to_json(fpath + "fox_inits.json", fox_inits)
+    to_json(fpath + "rabbit_inits.json", rabbit_inits)
 
     ae = AnimalEvolution(_settings, food_objects, animal_objects)
 
@@ -78,8 +79,8 @@ def run_sim(_settings=settings, id="no_id", basepath="generated/", maxcycles=100
     stats, genes = ae.run_cycles(maxcycles=maxcycles)
 
     # Save simulated data
-    to_file(fpath+"stats", stats)
-    to_file(fpath+"genes", genes)
+    to_file(fpath + "stats", stats)
+    to_file(fpath + "genes", genes)
 
     # Plot gathered data
     population_stats_plot(stats, food_objects, animal_objects, title=fpath)
@@ -97,4 +98,3 @@ if __name__ == "__main__":
     #     for run_id in range(1):
     #         settings["animal_std"] = std
     #         run_sim(settings, basepath="generated/evolution_run1", maxcycles=50000, id=f"seriousRun-{run_id}")
-

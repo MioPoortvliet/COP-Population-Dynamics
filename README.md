@@ -1,6 +1,6 @@
 # COP-Population-Dynamics
  
-Authors: Jonah Post, Mio Poortvliet
+Authors: Jonah Post, Mio Poortvliet, Ilya Bolotov
 ##How to run
 
 Run main.py to run the animation.
@@ -20,6 +20,7 @@ We intended to write a general evolution engine that will accept any static (foo
 - Numpy
 - Matplotlib
 - Numba
+- PyQt5
 
 ##Important files
 - ```src/population_dynamics.py``` contains the structure of the playing field.
