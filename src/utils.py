@@ -16,7 +16,8 @@ def minimum_int(num: float, min_num=1):
 
 
 def nearest_nonzero_idx(a:np.array,x:int,y:int):
-	""""From https://stackoverflow.com/questions/43306291/find-the-nearest-nonzero-element-and-corresponding-index-in-a-2d-numpy-array"""
+	""""From https://stackoverflow.com/questions/43306291/find-the-nearest-nonzero-element-and-corresponding-index-in
+	-a-2d-numpy-array """
 	idx = np.argwhere(a)
 
 	# If (x,y) itself is also non-zero, we want to avoid those, so delete that

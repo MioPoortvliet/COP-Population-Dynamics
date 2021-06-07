@@ -43,6 +43,6 @@ food_objects = {"carrot": Carrot}
 
 if __name__ == '__main__':
 	# Change simulation parameters above.
-	# Change maxcycles for a longer run.
-	outputpath = run_sim(settings, id="main", maxcycles=1000, food_objects=food_objects, animal_objects=animal_objects)
-	analyse_single(outputpath, skipdata=0)
+	# Change max cycles for a longer run.
+	output_path = run_sim(settings, id="main", maxcycles=1000, food_objects=food_objects, animal_objects=animal_objects)
+	analyse_single(output_path, skipdata=0)

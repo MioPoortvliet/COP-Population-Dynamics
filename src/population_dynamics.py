@@ -1,5 +1,5 @@
 """
-Authors: Jonah Post, Mio Poortvliet
+Authors: Jonah Post, Mio Poortvliet, Ilya Bolotov
 
 Simulate a population of static food and animals. An example of valid settings:
 ============================================================================
