@@ -1,6 +1,6 @@
 """
 Helper functions for input/output.
-Authors: Mio Poortvliet, Jonah Post, Iliya Bolotov
+Contributors: Mio Poortvliet, Jonah Post, Iliya Bolotov
 """
 import numpy as np
 import os
