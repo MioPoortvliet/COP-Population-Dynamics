@@ -1,6 +1,6 @@
 # COP-Population-Dynamics
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
  
 Contributors: Jonah Post, Mio Poortvliet, Iliya Bolotov
@@ -45,6 +45,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://github.com/MioPoortvliet"><img src="https://avatars.githubusercontent.com/u/6685801?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mio Poortvliet</b></sub></a><br /><a href="https://github.com/I-Atlas/COP-Population-Dynamics/commits?author=MioPoortvliet" title="Code">💻</a> <a href="#data-MioPoortvliet" title="Data">🔣</a> <a href="https://github.com/I-Atlas/COP-Population-Dynamics/commits?author=MioPoortvliet" title="Documentation">📖</a> <a href="#example-MioPoortvliet" title="Examples">💡</a> <a href="#maintenance-MioPoortvliet" title="Maintenance">🚧</a> <a href="#tool-MioPoortvliet" title="Tools">🔧</a></td>
+    <td align="center"><a href="https://github.com/JonahPost"><img src="https://avatars.githubusercontent.com/u/48297677?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jonah</b></sub></a><br /><a href="https://github.com/I-Atlas/COP-Population-Dynamics/commits?author=JonahPost" title="Code">💻</a> <a href="#data-JonahPost" title="Data">🔣</a> <a href="https://github.com/I-Atlas/COP-Population-Dynamics/commits?author=JonahPost" title="Documentation">📖</a> <a href="#example-JonahPost" title="Examples">💡</a> <a href="#maintenance-JonahPost" title="Maintenance">🚧</a> <a href="#tool-JonahPost" title="Tools">🔧</a> <a href="#question-JonahPost" title="Answering Questions">💬</a></td>
   </tr>
 </table>
 
