@@ -18,6 +18,21 @@
         "maintenance",
         "tool"
       ]
+    },
+    {
+      "login": "JonahPost",
+      "name": "Jonah",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48297677?v=4",
+      "profile": "https://github.com/JonahPost",
+      "contributions": [
+        "code",
+        "data",
+        "doc",
+        "example",
+        "maintenance",
+        "tool",
+        "question"
+      ]
     }
   ],
   "contributorsPerLine": 7,
