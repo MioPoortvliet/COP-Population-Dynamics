@@ -1,0 +1,29 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "MioPoortvliet",
+      "name": "Mio Poortvliet",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6685801?v=4",
+      "profile": "https://github.com/MioPoortvliet",
+      "contributions": [
+        "code",
+        "data",
+        "doc",
+        "example",
+        "maintenance",
+        "tool"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "COP-Population-Dynamics",
+  "projectOwner": "I-Atlas",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
