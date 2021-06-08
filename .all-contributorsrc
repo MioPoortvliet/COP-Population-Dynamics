@@ -16,7 +16,9 @@
         "doc",
         "example",
         "maintenance",
-        "tool"
+        "tool",
+        "ideas",
+        "infra"
       ]
     },
     {
