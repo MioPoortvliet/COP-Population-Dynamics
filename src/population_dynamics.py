@@ -283,6 +283,7 @@ class AnimalEvolution:
             if self.step():
                 break
 
+        # one cycle ≈ one year
         self.cycle_reset()
 
     def cycle_reset(self) -> None:
