@@ -33,6 +33,17 @@
         "tool",
         "question"
       ]
+    },
+    {
+      "login": "I-Atlas",
+      "name": "Iliya Bolotov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/54947380?v=4",
+      "profile": "http://iliya-bolotov.space",
+      "contributions": [
+        "code",
+        "doc",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
